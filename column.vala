@@ -14,6 +14,15 @@ string? get_file_name_factory (Gtk.ListItem item, FileInfo? info) {
     }
 }
 
+string? get_file_type_factory (Gtk.ListItem item, FileInfo? info) {
+    if (null == info) {
+        return "UNKNOWN";
+    } else {
+        FileType type = info.get_file_type ();
+        return ((EnumClass)typeof(FileType).class_ref()).get_value(type).value_name.substring(12);
+    }
+}
+
 string? get_file_size_factory (Gtk.ListItem item, FileInfo? info) {
     if (null == info) {
         return null;
@@ -39,6 +48,14 @@ string? get_file_name (FileInfo? info) {
         return null;
     } else {
         return strdup(info.get_name());
+    }
+}
+
+int get_file_type (FileInfo? info) {
+    if (null == info) {
+        return (int)FileType.UNKNOWN;
+    } else {
+        return (int)info.get_file_type ();
     }
 }
 
@@ -70,13 +87,15 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
     private unowned Gtk.ColumnViewColumn column_name;
     [GtkChild]
+    private unowned Gtk.ColumnViewColumn column_type;
+    [GtkChild]
     private unowned Gtk.ColumnViewColumn column_size;
     [GtkChild]
     private unowned Gtk.ColumnViewColumn column_date;
     [GtkChild]
     private unowned Gtk.GestureClick rows_right_clicked;
-
-    Gtk.PopoverMenu datagrid_context_menu;
+    [GtkChild]
+    private unowned Gtk.PopoverMenu rows_popover_menu;
 
     public GtkColumnViewDemoWindow(Gtk.Application app) {
         Object (application: app);
@@ -91,6 +110,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         PropertyAction action = new PropertyAction("show-name", column_name, "visible");
         actions.add_action(action);
 
+        action = new PropertyAction("show-type", column_type, "visible");
+        actions.add_action(action);
+
         action = new PropertyAction("show-size", column_size, "visible");
         actions.add_action(action);
 
@@ -99,14 +121,17 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
 
         this.insert_action_group("columnview", actions);
 
-        rows_right_clicked.pressed.connect((n_press, x, y) => {
-            var builder = new Gtk.Builder.from_resource("/com/github/taozuhong/GtkColumnViewDemo/column.ui");
-            GLib.MenuModel context_menu = (GLib.MenuModel) builder.get_object ("header_menu");
-            var datagrid_context_menu = new Gtk.PopoverMenu.from_model(context_menu);
+        rows_right_clicked.pressed.connect(rows_right_clicked_handler);
+    }
+
+    private void rows_right_clicked_handler(int n_press, double x, double y)
+    {
+        if (! this.columnview.model.get_selection().is_empty())
+        {
             Gdk.Rectangle  rect = { (int)x, (int)y, 0, 0, };
-            datagrid_context_menu.set_pointing_to(rect);
-            datagrid_context_menu.present();
-        });
+            rows_popover_menu.set_pointing_to(rect);
+            rows_popover_menu.popup();
+        }
     }
 }
 

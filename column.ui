@@ -13,13 +13,14 @@
             <property name="show-column-separators">TRUE</property>
             <property name="show-row-separators">TRUE</property>
             <property name="enable-rubberband">TRUE</property>
+            <property name="reorderable">TRUE</property>
             <property name="model">
               <object class="GtkMultiSelection" id="selection">
                 <property name="model">
                   <object class="GtkSortListModel" id="sortlist">
                     <property name="model">
                       <object class="GtkDirectoryList" id="directorylist">
-                        <property name="attributes">standard::name,standard::icon,standard::size,time::modified</property>
+                        <property name="attributes">standard::name,standard::icon,standard::type,standard::size,time::modified</property>
                       </object>
                     </property>
                   </object>
@@ -79,6 +80,45 @@
                 </property>
               </object>
             </child>  
+            <child>
+              <object class="GtkColumnViewColumn" id="column_type">
+                <property name="title">Type</property>
+                <property name="resizable">FALSE</property>
+                <property name="expand">TRUE</property>
+                <property name="header-menu">header_menu</property>
+                <property name="factory">
+                  <object class="GtkBuilderListItemFactory">
+                    <property name="bytes"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkLabel">
+        <property name="hexpand">TRUE</property>
+        <property name="xalign">0</property>
+        <binding name="label">
+          <closure type="gchararray" function="get_file_type_factory">
+            <lookup name="item">GtkListItem</lookup>
+          </closure>
+        </binding>
+      </object>
+    </property>
+  </template>
+</interface>
+                    ]]></property>
+                  </object>
+                </property>
+                <property name="sorter">
+                  <object class="GtkNumericSorter" id="sorter_type">
+                    <property name="expression">
+                      <closure type="gint" function="get_file_type">
+                      </closure>
+                    </property>
+                    <property name="sort-order">GTK_SORT_ASCENDING</property>
+                  </object>
+                </property>
+              </object>
+            </child>
             <child>
               <object class="GtkColumnViewColumn" id="column_size">
                 <property name="title">Size</property>
@@ -158,6 +198,13 @@
               </object>
             </child>
             <child>
+                <object class="GtkPopoverMenu" id="rows_popover_menu">
+                  <property name="position">bottom</property>
+                  <property name="has-arrow">FALSE</property>
+                  <property name="menu-model">header_menu</property>
+                </object>
+            </child>
+            <child>
                 <object class="GtkGestureClick" id="rows_right_clicked">
                   <property name="button">3</property>
                 </object>
@@ -173,6 +220,10 @@
         <attribute name="label" translatable="yes">Name</attribute>
         <attribute name="action">columnview.show-name</attribute>
       </item>
+      <item>
+        <attribute name="label" translatable="yes">Type</attribute>
+        <attribute name="action">columnview.show-type</attribute>
+      </item>      
       <item>
         <attribute name="label" translatable="yes">Size</attribute>
         <attribute name="action">columnview.show-size</attribute>
