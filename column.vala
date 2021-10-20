@@ -104,6 +104,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         directorylist.set_file(file);
 
         sortlist.sorter = columnview.sorter;
+        // columnview.activate.connect(row_activate_handler);
 
         SimpleActionGroup actions = new SimpleActionGroup();
         
@@ -119,9 +120,22 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         action = new PropertyAction("show-date", column_date, "visible");
         actions.add_action(action);
 
+        SimpleAction simple = new SimpleAction("select-all", null);
+        simple.activate.connect(select_all_handler); 
+        actions.add_action(simple);
+
+        simple = new SimpleAction("select-none", null);
+        simple.activate.connect(select_none_handler); 
+        actions.add_action(simple);
+
         this.insert_action_group("columnview", actions);
 
         rows_right_clicked.pressed.connect(rows_right_clicked_handler);
+    }
+
+    private void row_activate_handler(uint position)
+    {
+
     }
 
     private void rows_right_clicked_handler(int n_press, double x, double y)
@@ -132,6 +146,16 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             rows_popover_menu.set_pointing_to(rect);
             rows_popover_menu.popup();
         }
+    }
+
+    private void select_all_handler(Variant? parameter)
+    {
+        this.columnview.model.select_all();
+    }
+
+    private void select_none_handler(Variant? parameter)
+    {
+        this.columnview.model.unselect_all();
     }
 }
 
