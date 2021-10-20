@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkColumnViewDemoWindow" parent="GtkApplicationWindow">
+    <property name="title">file list</property>
+    <property name="default-width">800</property>
+    <property name="default-height">600</property>
+    <child>
+      <object class="GtkScrolledWindow" id="scr">
+        <property name="hexpand">TRUE</property>
+        <property name="vexpand">TRUE</property>
+        <child>
+          <object class="GtkColumnView" id="columnview">
+            <property name="show-column-separators">TRUE</property>
+            <property name="show-row-separators">TRUE</property>
+            <property name="enable-rubberband">TRUE</property>
+            <property name="model">
+              <object class="GtkMultiSelection" id="selection">
+                <property name="model">
+                  <object class="GtkSortListModel" id="sortlist">
+                    <property name="model">
+                      <object class="GtkDirectoryList" id="directorylist">
+                        <property name="attributes">standard::name,standard::icon,standard::size,time::modified</property>
+                      </object>
+                    </property>
+                  </object>
+                </property>
+              </object>
+            </property>
+            <child>
+              <object class="GtkColumnViewColumn" id="column_name">
+                <property name="title">Name</property>
+                <property name="resizable">1</property>
+                <property name="expand">TRUE</property>
+                <property name="header-menu">header_menu</property>
+                <property name="factory">
+                  <object class="GtkBuilderListItemFactory">
+                    <property name="bytes"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkBox">
+        <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+        <property name="spacing">20</property>
+        <child>
+          <object class="GtkImage">
+            <binding name="gicon">
+              <closure type="GIcon" function="get_icon_factory">
+                <lookup name="item">GtkListItem</lookup>
+              </closure>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="hexpand">TRUE</property>
+            <property name="xalign">0</property>
+            <binding name="label">
+              <closure type="gchararray" function="get_file_name_factory">
+                <lookup name="item">GtkListItem</lookup>
+              </closure>
+            </binding>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>
+                    ]]></property>
+                  </object>
+                </property>
+                <property name="sorter">
+                  <object class="GtkStringSorter" id="sorter_name">
+                    <property name="expression">
+                      <closure type="gchararray" function="get_file_name">
+                      </closure>
+                    </property>
+                  </object>
+                </property>
+              </object>
+            </child>  
+            <child>
+              <object class="GtkColumnViewColumn" id="column_size">
+                <property name="title">Size</property>
+                <property name="resizable">FALSE</property>
+                <property name="expand">TRUE</property>
+                <property name="header-menu">header_menu</property>
+                <property name="factory">
+                  <object class="GtkBuilderListItemFactory">
+                    <property name="bytes"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkLabel">
+        <property name="hexpand">TRUE</property>
+        <property name="xalign">0</property>
+        <binding name="label">
+          <closure type="gchararray" function="get_file_size_factory">
+            <lookup name="item">GtkListItem</lookup>
+          </closure>
+        </binding>
+      </object>
+    </property>
+  </template>
+</interface>
+                    ]]></property>
+                  </object>
+                </property>
+                <property name="sorter">
+                  <object class="GtkNumericSorter" id="sorter_size">
+                    <property name="expression">
+                      <closure type="gint64" function="get_file_size">
+                      </closure>
+                    </property>
+                    <property name="sort-order">GTK_SORT_ASCENDING</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkColumnViewColumn" id="column_date">
+                <property name="title">Date modified</property>
+                <property name="resizable">FALSE</property>
+                <property name="expand">TRUE</property>
+                <property name="header-menu">header_menu</property>
+                <property name="factory">
+                  <object class="GtkBuilderListItemFactory">
+                    <property name="bytes"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkLabel">
+        <property name="hexpand">TRUE</property>
+        <property name="xalign">0</property>
+        <binding name="label">
+          <closure type="gchararray" function="get_file_time_modified_factory">
+            <lookup name="item">GtkListItem</lookup>
+          </closure>
+        </binding>
+      </object>
+    </property>
+  </template>
+</interface>
+                    ]]></property>
+                  </object>
+                </property>
+                <property name="sorter">
+                  <object class="GtkNumericSorter" id="sorter_datetime_modified">
+                    <property name="expression">
+                      <closure type="gint64" function="get_file_unixtime_modified">
+                      </closure>
+                    </property>
+                    <property name="sort-order">GTK_SORT_ASCENDING</property>
+                  </object>
+                </property>
+              </object>
+            </child>
+            <child>
+                <object class="GtkGestureClick" id="rows_right_clicked">
+                  <property name="button">3</property>
+                </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+  <menu id="header_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Name</attribute>
+        <attribute name="action">columnview.show-name</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Size</attribute>
+        <attribute name="action">columnview.show-size</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Date</attribute>
+        <attribute name="action">columnview.show-date</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>
