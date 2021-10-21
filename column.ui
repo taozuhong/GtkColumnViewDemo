@@ -210,7 +210,7 @@
                 </child>
                 <child>
                     <object class="GtkGestureClick" id="rows_right_clicked">
-                      <property name="button">3</property>
+                      <property name="button">0</property>
                     </object>
                 </child>
               </object>
@@ -412,7 +412,7 @@
                 </child>
                 <child>
                     <object class="GtkGestureClick" id="rows_right_clicked2">
-                      <property name="button">3</property>
+                      <property name="button">0</property>
                     </object>
                 </child>
               </object>

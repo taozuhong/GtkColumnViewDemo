@@ -1,3 +1,5 @@
+using Gtk;
+
 [GtkTemplate (ui = "/com/github/taozuhong/GtkColumnViewDemo/column.ui")]
 public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
@@ -146,22 +148,37 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         }
     }
 
-    private void rows_right_clicked_handler(int n_press, double x, double y)
+    private void rows_right_clicked_handler(GestureClick gesture, int n_press, double x, double y)
     {
-        if (0 == books.page) {
-            if (! this.columnview.model.get_selection().is_empty())
-            {
-                Gdk.Rectangle  rect = { (int)x, (int)y, 0, 0, };
-                rows_popover_menu.set_pointing_to(rect);
-                rows_popover_menu.popup();
+        GLib.warning("Mouse: button = %u, n_press = %d", gesture.get_current_button(), n_press);
+        if ((Gdk.BUTTON_SECONDARY == gesture.get_current_button()) && (1 == n_press))
+        {
+            if (0 == books.page) {
+                if (! this.columnview.model.get_selection().is_empty())
+                {
+                    Gdk.Rectangle  rect = { (int)x, (int)y, 0, 0, };
+                    rows_popover_menu.set_pointing_to(rect);
+                    rows_popover_menu.popup();
+                }
+            } else {
+                if (! this.columnview2.model.get_selection().is_empty())
+                {
+                    Gdk.Rectangle  rect = { (int)x, (int)y, 0, 0, };
+                    rows_popover_menu2.set_pointing_to(rect);
+                    rows_popover_menu2.popup();
+                }
             }
-        } else {
-            if (! this.columnview2.model.get_selection().is_empty())
-            {
-                Gdk.Rectangle  rect = { (int)x, (int)y, 0, 0, };
-                rows_popover_menu2.set_pointing_to(rect);
-                rows_popover_menu2.popup();
-            }
+        } else if ((Gdk.BUTTON_PRIMARY == gesture.get_current_button()) && (2 == n_press)) {
+            var message_dialog = new Gtk.MessageDialog(
+                this, 
+                Gtk.DialogFlags.MODAL, 
+                Gtk.MessageType.INFO, 
+                Gtk.ButtonsType.CLOSE,
+                "Double clicked.");
+            message_dialog.response.connect((dialog, id) => {
+                dialog.destroy();
+            });
+            message_dialog.show();
         }
     }
 
