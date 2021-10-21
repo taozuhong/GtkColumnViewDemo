@@ -74,6 +74,47 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         rows_right_clicked2.pressed.connect(rows_right_clicked_handler);
     }
 
+    [GtkCallback]
+    private void column_size_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    {
+        Gtk.Label label = new Gtk.Label("");
+        label.xalign = 1.0f;
+        listitem.child = label;
+    }
+
+    [GtkCallback]
+    private void column_size_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    {
+        Gtk.Label label = listitem.child as Gtk.Label;
+        FileInfo? info = listitem.item as FileInfo;
+        if (null != info) {
+            label.label = "%ld".printf((long)info.get_size());;
+        } else {
+            label.label = "NULL";
+        }
+    }
+
+    [GtkCallback]
+    private void column_date_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    {
+        Gtk.Label label = new Gtk.Label("");
+        label.xalign = 1.0f;
+        listitem.child = label;
+    }
+
+    [GtkCallback]
+    private void column_date_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    {
+        Gtk.Label label = listitem.child as Gtk.Label;
+        FileInfo? info = listitem.item as FileInfo;
+        if (null != info) {
+            DateTime dt = info.get_modification_date_time ();
+            label.label = dt.format("%F");
+        } else {
+            label.label = "NULL";
+        }
+    }
+
     private void switch_page_handler (Gtk.Widget page, uint page_num)
     {
         SimpleAction? action;

@@ -364,25 +364,9 @@
                     <property name="expand">TRUE</property>
                     <property name="header-menu">header_menu</property>
                     <property name="factory">
-                      <object class="GtkBuilderListItemFactory">
-                        <property name="bytes"><![CDATA[
-<?xml version="1.0" encoding="UTF-8"?>
-<interface>
-  <template class="GtkListItem">
-    <property name="child">
-      <object class="GtkLabel">
-        <property name="hexpand">TRUE</property>
-        <property name="xalign">0</property>
-        <binding name="label">
-          <closure type="gchararray" function="get_file_size_factory">
-            <lookup name="item">GtkListItem</lookup>
-          </closure>
-        </binding>
-      </object>
-    </property>
-  </template>
-</interface>
-                        ]]></property>
+                      <object class="GtkSignalListItemFactory">
+                        <signal name="setup" handler="column_size_setup_handler" />
+                        <signal name="bind" handler="column_size_bind_handler" />
                       </object>
                     </property>
                     <property name="sorter">
@@ -403,25 +387,9 @@
                     <property name="expand">TRUE</property>
                     <property name="header-menu">header_menu</property>
                     <property name="factory">
-                      <object class="GtkBuilderListItemFactory">
-                        <property name="bytes"><![CDATA[
-<?xml version="1.0" encoding="UTF-8"?>
-<interface>
-  <template class="GtkListItem">
-    <property name="child">
-      <object class="GtkLabel">
-        <property name="hexpand">TRUE</property>
-        <property name="xalign">0</property>
-        <binding name="label">
-          <closure type="gchararray" function="get_file_time_modified_factory">
-            <lookup name="item">GtkListItem</lookup>
-          </closure>
-        </binding>
-      </object>
-    </property>
-  </template>
-</interface>
-                        ]]></property>
+                      <object class="GtkSignalListItemFactory">
+                        <signal name="setup" handler="column_date_setup_handler" />
+                        <signal name="bind" handler="column_date_bind_handler" />
                       </object>
                     </property>
                     <property name="sorter">
