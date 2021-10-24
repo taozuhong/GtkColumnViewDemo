@@ -49,9 +49,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         { "show-size", show_size_handler, null, "true", null },
         { "show-date", show_date_handler, null, "true", null },
 
-        { "show-table", show_table_handler },
-        { "show-list", show_list_handler },
-        { "show-normal", show_normal_handler },
+        { "show-table", show_table_handler, null, "false", null },
+        { "show-list", show_list_handler, null, "false", null },
+        { "show-normal", show_normal_handler, null, "true", null },
 
         { "select-all", select_all_handler },
         { "select-none", select_none_handler },
@@ -72,8 +72,8 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         this.insert_action_group("columnview", simple_action_group);
 
         this.books.switch_page.connect(switch_page_handler);
-        rows_right_clicked.pressed.connect(rows_right_clicked_handler);
-        rows_right_clicked2.pressed.connect(rows_right_clicked_handler);
+        rows_right_clicked.pressed.connect(rows_mouse_click_handler);
+        rows_right_clicked2.pressed.connect(rows_mouse_click_handler);
     }
 
     [GtkCallback]
@@ -148,7 +148,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         }
     }
 
-    private void rows_right_clicked_handler(GestureClick gesture, int n_press, double x, double y)
+    private void rows_mouse_click_handler(GestureClick gesture, int n_press, double x, double y)
     {
         // GLib.warning("Mouse: button = %u, n_press = %d", gesture.get_current_button(), n_press);
         if ((Gdk.BUTTON_SECONDARY == gesture.get_current_button()) && (1 == n_press))
@@ -245,6 +245,13 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         } else {
             this.columnview2.css_classes = { "data-table" };
         }
+
+        var action2 = simple_action_group.lookup_action("show-table") as SimpleAction;
+        action2?.set_state (new Variant.boolean(true));
+        action2 = simple_action_group.lookup_action("show-list") as SimpleAction;
+        action2?.set_state (new Variant.boolean(false));
+        action2 = simple_action_group.lookup_action("show-normal") as SimpleAction;
+        action2?.set_state (new Variant.boolean(false));
     }
 
     private void show_list_handler(SimpleAction action, Variant? parameter)
@@ -254,6 +261,13 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         } else {
             this.columnview2.css_classes = { "rich-list" };
         }
+
+        var action2 = simple_action_group.lookup_action("show-table") as SimpleAction;
+        action2?.set_state (new Variant.boolean(false));
+        action2 = simple_action_group.lookup_action("show-list") as SimpleAction;
+        action2?.set_state (new Variant.boolean(true));
+        action2 = simple_action_group.lookup_action("show-normal") as SimpleAction;
+        action2?.set_state (new Variant.boolean(false));
     }
 
     private void show_normal_handler(SimpleAction action, Variant? parameter)
@@ -263,6 +277,13 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         } else {
             this.columnview2.css_classes = { };
         }
+
+        var action2 = simple_action_group.lookup_action("show-table") as SimpleAction;
+        action2?.set_state (new Variant.boolean(false));
+        action2 = simple_action_group.lookup_action("show-list") as SimpleAction;
+        action2?.set_state (new Variant.boolean(false));
+        action2 = simple_action_group.lookup_action("show-normal") as SimpleAction;
+        action2?.set_state (new Variant.boolean(true));
     }
 }
 

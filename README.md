@@ -7,3 +7,4 @@ A GtkColumnView demo app, it integrate with follow GTK4 features:
 5. GtkBuilder with GtkTemplate / GtkChild / GtkCallback support
 6. GtkBuilderListItemFactory
 7. GtkSignalListItemFactory
+8. Shortcut support

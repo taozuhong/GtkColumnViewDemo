@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template class="GtkColumnViewDemoWindow" parent="GtkApplicationWindow">
-    <property name="title">file list</property>
+    <property name="title">Gtk4 ColumnView demo</property>
     <property name="default-width">800</property>
     <property name="default-height">600</property>
     <child>
@@ -452,18 +452,26 @@
       <item>
         <attribute name="label" translatable="yes">Name</attribute>
         <attribute name="action">columnview.show-name</attribute>
+        <attribute name="icon">starred</attribute>
+        <attribute name="accel">&lt;Control&gt;1</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Type</attribute>
         <attribute name="action">columnview.show-type</attribute>
+        <attribute name="icon">starred</attribute>
+        <attribute name="accel">&lt;Control&gt;2</attribute>
       </item>      
       <item>
         <attribute name="label" translatable="yes">Size</attribute>
         <attribute name="action">columnview.show-size</attribute>
+        <attribute name="icon">starred</attribute>
+        <attribute name="accel">&lt;Control&gt;3</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Date</attribute>
         <attribute name="action">columnview.show-date</attribute>
+        <attribute name="icon">starred</attribute>
+        <attribute name="accel">&lt;Control&gt;4</attribute>
       </item>
     </section>
   </menu>
@@ -472,10 +480,14 @@
       <item>
         <attribute name="label" translatable="yes">Select All</attribute>
         <attribute name="action">columnview.select-all</attribute>
+        <attribute name="icon">view-fullscreen</attribute>
+        <attribute name="accel">&lt;Control&gt;A</attribute>
       </item>
       <item>
         <attribute name="label" translatable="yes">Select None</attribute>
         <attribute name="action">columnview.select-none</attribute>
+        <attribute name="icon">zoom-fit-best</attribute>
+        <attribute name="accel">&lt;Control&gt;&lt;Shift&gt;A</attribute>
       </item>
     </section>
     <section>
@@ -485,18 +497,26 @@
           <item>
             <attribute name="label" translatable="yes">Name</attribute>
             <attribute name="action">columnview.show-name</attribute>
+            <attribute name="icon">starred</attribute>
+            <attribute name="accel">&lt;Control&gt;1</attribute>
           </item>
           <item>
             <attribute name="label" translatable="yes">Type</attribute>
             <attribute name="action">columnview.show-type</attribute>
+            <attribute name="icon">starred</attribute>
+            <attribute name="accel">&lt;Control&gt;2</attribute>
           </item>      
           <item>
             <attribute name="label" translatable="yes">Size</attribute>
             <attribute name="action">columnview.show-size</attribute>
+            <attribute name="icon">starred</attribute>
+            <attribute name="accel">&lt;Control&gt;3</attribute>
           </item>
           <item>
             <attribute name="label" translatable="yes">Date</attribute>
             <attribute name="action">columnview.show-date</attribute>
+            <attribute name="icon">starred</attribute>
+            <attribute name="accel">&lt;Control&gt;4</attribute>
           </item>
         </section>
       </submenu>
@@ -506,14 +526,17 @@
           <item>
             <attribute name="label" translatable="yes">Data table</attribute>
             <attribute name="action">columnview.show-table</attribute>
+            <attribute name="accel">&lt;Control&gt;&lt;Alt&gt;T</attribute>
           </item>
           <item>
             <attribute name="label" translatable="yes">Rich list</attribute>
             <attribute name="action">columnview.show-list</attribute>
+            <attribute name="accel">&lt;Control&gt;&lt;Alt&gt;L</attribute>
           </item>
           <item>
-            <attribute name="label" translatable="yes">Back normal</attribute>
+            <attribute name="label" translatable="yes">Normal</attribute>
             <attribute name="action">columnview.show-normal</attribute>
+            <attribute name="accel">&lt;Control&gt;&lt;Alt&gt;N</attribute>
           </item>           
         </section>
       </submenu>
