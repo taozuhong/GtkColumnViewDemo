@@ -14,7 +14,7 @@ public class GtkColumnViewDemoApp : Gtk.Application {
         { "columnview.select-none", "<Control><Shift>A"},
         { "columnview.show-table", "<Control><Alt>T"},
         { "columnview.show-list", "<Control><Alt>L"},
-        { "columnview.show-normal", "<Control><Alt>N"},
+        { "columnview.show-sidebar", "<Control><Alt>S"},
     };
 
     protected override void activate () {

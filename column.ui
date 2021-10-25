@@ -534,9 +534,9 @@
             <attribute name="accel">&lt;Control&gt;&lt;Alt&gt;L</attribute>
           </item>
           <item>
-            <attribute name="label" translatable="yes">Normal</attribute>
-            <attribute name="action">columnview.show-normal</attribute>
-            <attribute name="accel">&lt;Control&gt;&lt;Alt&gt;N</attribute>
+            <attribute name="label" translatable="yes">Sidebar</attribute>
+            <attribute name="action">columnview.show-sidebar</attribute>
+            <attribute name="accel">&lt;Control&gt;&lt;Alt&gt;S</attribute>
           </item>           
         </section>
       </submenu>

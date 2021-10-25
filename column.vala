@@ -51,7 +51,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
 
         { "show-table", show_table_handler, null, "false", null },
         { "show-list", show_list_handler, null, "false", null },
-        { "show-normal", show_normal_handler, null, "true", null },
+        { "show-sidebar", show_sidebar_handler, null, "true", null },
 
         { "select-all", select_all_handler },
         { "select-none", select_none_handler },
@@ -250,7 +250,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         action2?.set_state (new Variant.boolean(true));
         action2 = simple_action_group.lookup_action("show-list") as SimpleAction;
         action2?.set_state (new Variant.boolean(false));
-        action2 = simple_action_group.lookup_action("show-normal") as SimpleAction;
+        action2 = simple_action_group.lookup_action("show-sidebar") as SimpleAction;
         action2?.set_state (new Variant.boolean(false));
     }
 
@@ -266,23 +266,23 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         action2?.set_state (new Variant.boolean(false));
         action2 = simple_action_group.lookup_action("show-list") as SimpleAction;
         action2?.set_state (new Variant.boolean(true));
-        action2 = simple_action_group.lookup_action("show-normal") as SimpleAction;
+        action2 = simple_action_group.lookup_action("show-sidebar") as SimpleAction;
         action2?.set_state (new Variant.boolean(false));
     }
 
-    private void show_normal_handler(SimpleAction action, Variant? parameter)
+    private void show_sidebar_handler(SimpleAction action, Variant? parameter)
     {
         if (0 == books.page) {
-            this.columnview.css_classes = { };
+            this.columnview.css_classes = { "navigation-sidebar" };
         } else {
-            this.columnview2.css_classes = { };
+            this.columnview2.css_classes = { "navigation-sidebar" };
         }
 
         var action2 = simple_action_group.lookup_action("show-table") as SimpleAction;
         action2?.set_state (new Variant.boolean(false));
         action2 = simple_action_group.lookup_action("show-list") as SimpleAction;
         action2?.set_state (new Variant.boolean(false));
-        action2 = simple_action_group.lookup_action("show-normal") as SimpleAction;
+        action2 = simple_action_group.lookup_action("show-sidebar") as SimpleAction;
         action2?.set_state (new Variant.boolean(true));
     }
 }
