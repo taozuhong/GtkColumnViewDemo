@@ -79,20 +79,24 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkCallback]
     private void column_name_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
-        Gtk.EditableLabel label = new Gtk.EditableLabel("");
-        label.xalign = 0.5f;
-        listitem.child = label;
+        Gtk.Entry entry = new Gtk.Entry();
+        entry.focusable = true;
+        entry.secondary_icon_name = "accessories-text-editor";
+        entry.secondary_icon_activatable = true;
+        entry.secondary_icon_tooltip_text = "Click icon to edit it in large window";
+        entry.xalign = 0.5f;
+        listitem.child = entry;
     }
 
     [GtkCallback]
     private void column_name_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
-        Gtk.EditableLabel label = listitem.child as Gtk.EditableLabel;
+        Gtk.Entry entry = listitem.child as Gtk.Entry;
         FileInfo? info = listitem.item as FileInfo;
         if (null != info) {
-            label.text = info.get_name();
+            entry.text = info.get_name();
         } else {
-            label.text = "NULL";
+            entry.text = "NULL";
         }
     }
 
@@ -101,6 +105,8 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     {
         string[] type_array = { "UNKNOWN", "REGULAR", "DIRECTORY", "SYMBOLIC_LINK", "SPECIAL", "SHORTCUT", "MOUNTABLE" };
         Gtk.ComboBoxText dropdown = new Gtk.ComboBoxText.with_entry();
+        dropdown.focusable = true;
+        dropdown.has_frame = true;
         foreach(var text in type_array) {
             dropdown.append_text(text);
         }
@@ -124,6 +130,8 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     {
         Gtk.Adjustment adjustment = new Gtk.Adjustment(0, 0, 1000000, 1, 10, 0);
         Gtk.SpinButton spin_button = new Gtk.SpinButton(adjustment, 1.0, 2);
+        spin_button.focusable = true;
+        spin_button.css_classes = { "vertical" };
         listitem.child = spin_button;
     }
 
@@ -144,6 +152,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     {
         Gtk.Popover popover = new Gtk.Popover();
         Gtk.MenuButton button = new Gtk.MenuButton();
+        button.focusable = true;
         button.popover = popover;
         listitem.child = button;
 
