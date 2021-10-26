@@ -77,7 +77,103 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
+    private void column_name_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    {
+        Gtk.EditableLabel label = new Gtk.EditableLabel("");
+        label.xalign = 0.5f;
+        listitem.child = label;
+    }
+
+    [GtkCallback]
+    private void column_name_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    {
+        Gtk.EditableLabel label = listitem.child as Gtk.EditableLabel;
+        FileInfo? info = listitem.item as FileInfo;
+        if (null != info) {
+            label.text = info.get_name();
+        } else {
+            label.text = "NULL";
+        }
+    }
+
+    [GtkCallback]
+    private void column_type_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    {
+        string[] type_array = { "UNKNOWN", "REGULAR", "DIRECTORY", "SYMBOLIC_LINK", "SPECIAL", "SHORTCUT", "MOUNTABLE" };
+        Gtk.ComboBoxText dropdown = new Gtk.ComboBoxText.with_entry();
+        foreach(var text in type_array) {
+            dropdown.append_text(text);
+        }
+        listitem.child = dropdown;
+    }
+
+    [GtkCallback]
+    private void column_type_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    {
+        Gtk.ComboBoxText dropdown = listitem.child as Gtk.ComboBoxText;
+        FileInfo? info = listitem.item as FileInfo;
+        if (null != info) {
+            dropdown.active = info.get_file_type();
+        } else {
+            dropdown.active = FileType.UNKNOWN;
+        }
+    }
+
+    [GtkCallback]
     private void column_size_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    {
+        Gtk.Adjustment adjustment = new Gtk.Adjustment(0, 0, 1000000, 1, 10, 0);
+        Gtk.SpinButton spin_button = new Gtk.SpinButton(adjustment, 1.0, 2);
+        listitem.child = spin_button;
+    }
+
+    [GtkCallback]
+    private void column_size_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    {
+        Gtk.SpinButton spin_button = listitem.child as Gtk.SpinButton;
+        FileInfo? info = listitem.item as FileInfo;
+        if (null != info) {
+            spin_button.value = (double)info.get_size();
+        } else {
+            spin_button.value = 0.0;
+        }
+    }
+
+    [GtkCallback]
+    private void column_date_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    {
+        Gtk.Popover popover = new Gtk.Popover();
+        Gtk.MenuButton button = new Gtk.MenuButton();
+        button.popover = popover;
+        listitem.child = button;
+
+        Gtk.Calendar calendar = new Gtk.Calendar();
+        popover.child = calendar;
+        calendar.set_data<Object>("OWNER", button);
+        calendar.day_selected.connect((sender) => {
+            var button_shadow = sender.get_data<Object>("OWNER") as Gtk.MenuButton;
+            if (null != button_shadow) {
+                var datetime = sender.get_date();
+                button_shadow.label = datetime.format("%F");
+            }
+        });
+    }
+
+    [GtkCallback]
+    private void column_date_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    {
+        Gtk.MenuButton button = listitem.child as Gtk.MenuButton;
+        FileInfo? info = listitem.item as FileInfo;
+        if (null != info) {
+            DateTime datetime = info.get_modification_date_time ();
+            button.label = datetime.format("%F");
+        } else {
+            button.label = (new DateTime.now()).format("%F");
+        }
+    }
+
+    [GtkCallback]
+    private void column_size2_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.Label label = new Gtk.Label("");
         label.xalign = 1.0f;
@@ -85,7 +181,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void column_size_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void column_size2_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.Label label = listitem.child as Gtk.Label;
         FileInfo? info = listitem.item as FileInfo;
@@ -97,7 +193,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void column_date_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void column_date2_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.Label label = new Gtk.Label("");
         label.xalign = 1.0f;
@@ -105,7 +201,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void column_date_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void column_date2_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.Label label = listitem.child as Gtk.Label;
         FileInfo? info = listitem.item as FileInfo;
@@ -296,36 +392,39 @@ Icon? get_icon_factory (Gtk.ListItem item, FileInfo? info) {
     }
 }
 
-string? get_file_name_factory (Gtk.ListItem item, FileInfo? info) {
+string get_file_name_factory (Gtk.ListItem item, FileInfo? info) {
     if (null == info) {
-        return null;
+        return "";
     } else {
         return strdup (info.get_name ());
     }
 }
 
-string? get_file_type_factory (Gtk.ListItem item, FileInfo? info) {
+string get_file_type_factory (Gtk.ListItem item, FileInfo? info) {
     if (null == info) {
         return "UNKNOWN";
+        // return (uint)FileType.UNKNOWN;
     } else {
         FileType type = info.get_file_type ();
         return ((EnumClass)typeof(FileType).class_ref()).get_value(type).value_name.substring(12);
+        // return (uint)info.get_file_type ();
     }
 }
 
-string? get_file_size_factory (Gtk.ListItem item, FileInfo? info) {
+double get_file_size_factory (Gtk.ListItem item, FileInfo? info) {
     if (null == info) {
-        return null;
+        return 0.0;
     } else {
         /* goffset is gint64 */
-        int64 size = info.get_size ();
-        return "%ld".printf ((long) size);
+        // int64 size = (double)info.get_size ();
+        // return "%ld".printf ((long) size);
+        return (double)info.get_size();
     }
 }
 
-string? get_file_time_modified_factory (Gtk.ListItem item, FileInfo? info) {
+string get_file_time_modified_factory (Gtk.ListItem item, FileInfo? info) {
     if (null == info) {
-        return null;
+        return "";
     } else {
         DateTime dt = info.get_modification_date_time ();
         return dt.format("%F");
@@ -333,19 +432,19 @@ string? get_file_time_modified_factory (Gtk.ListItem item, FileInfo? info) {
 }
 
 /* Functions (closures) for GtkSorter */
-string? get_file_name (FileInfo? info) {
+string get_file_name (FileInfo? info) {
     if (null == info) {
-        return null;
+        return "";
     } else {
         return strdup(info.get_name());
     }
 }
 
-int get_file_type (FileInfo? info) {
+uint get_file_type (FileInfo? info) {
     if (null == info) {
-        return (int)FileType.UNKNOWN;
+        return (uint)FileType.UNKNOWN;
     } else {
-        return (int)info.get_file_type ();
+        return (uint)info.get_file_type ();
     }
 }
 
