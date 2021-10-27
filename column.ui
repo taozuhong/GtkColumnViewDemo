@@ -325,6 +325,61 @@
                   </object>
                 </child>
                 <child>
+                  <object class="GtkColumnViewColumn" id="column_prop">
+                    <property name="title">Property</property>
+                    <property name="resizable">FALSE</property>
+                    <property name="expand">TRUE</property>
+                    <property name="header-menu">header_menu</property>
+                    <property name="factory">
+                      <object class="GtkBuilderListItemFactory">
+                        <property name="bytes"><![CDATA[
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkBox">
+        <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+        <property name="spacing">20</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="hexpand">TRUE</property>
+            <property name="xalign">0</property>
+            <binding name="label">
+              <lookup type='GtkBox' name="orientation">
+                <lookup name="child">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="hexpand">TRUE</property>
+            <property name="xalign">1.0</property>
+            <binding name="label">
+              <lookup type='GtkBox' name="css_name">
+                <lookup name="child">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>
+                        ]]></property>
+                      </object>
+                    </property>
+                    <property name="sorter">
+                      <object class="GtkNumericSorter" id="sorter_css">
+                        <property name="expression">
+                          <constant type='gint64'>100</constant>
+                        </property>
+                        <property name="sort-order">GTK_SORT_ASCENDING</property>
+                      </object>
+                    </property>
+                  </object>
+                </child>
+                <child>
                     <object class="GtkPopoverMenu" id="rows_popover_menu2">
                       <property name="position">bottom</property>
                       <property name="has-arrow">FALSE</property>
