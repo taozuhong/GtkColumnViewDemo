@@ -1,5 +1,5 @@
 # GtkColumnViewDemo
-A GtkColumnView demo app, it integrate with follow GTK4 features:
+This is a GtkColumnView demo app for validating the GTK4 features for [Kangaroo App](https://github.com/dbkangaroo/kangaroo), it integrate with follow GTK4 features:
 1. GtkColumnView / GtkColumnViewColumn
 2. GtkPopoverMenu with check mark
 3. Context menu with model and submenu support
