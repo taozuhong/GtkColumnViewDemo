@@ -13,6 +13,10 @@ The GtkColumnViewDemo app integrates with follow GTK4 features:
 9. GtkMenuButton/GtkSpinButton/GtkEntry/GtkPopover/GtkComboBoxText/... usage
 10. GtkExpression usage
 
+# Screenshot
+![Edit mode with GtkSignalListItemFactory](./images/screenshot-1.png)
+![View mode with mixed GtkListItemFactory](./images/screenshot-2.png)
+
 # Expression examples
 __Expression with GtkClosureExpression(global) + GtkPropertyExpression__
 string get_file_type_factory (Gtk.ListItem item, FileInfo? info);
