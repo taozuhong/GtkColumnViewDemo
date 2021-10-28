@@ -1,5 +1,7 @@
 # GtkColumnViewDemo
-This is a GtkColumnView demo app for validating the GTK4 features for [Kangaroo App](https://www.datatable.online/?from=github), it integrate with follow GTK4 features:
+This is a GtkColumnView demo app for validating the GTK4 features for [Kangaroo App](https://www.datatable.online/?from=github), that is a database client and admin tool built with GTK, libgda and Vala.
+
+The GtkColumnViewDemo app integrates with follow GTK4 features:
 1. GtkColumnView / GtkColumnViewColumn
 2. GtkPopoverMenu with check mark
 3. Context menu with model and submenu support
