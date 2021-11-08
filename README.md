@@ -51,3 +51,20 @@ __Expression with GtkExpression property + GtkConstantExpression__
   </object>
 </property>
 ```
+
+__Expression with GtkExpression property + GtkClosureExpression(global)__
+```xml
+<object class="AdwComboRow" id="alignment">
+  <property name="visible">True</property>
+  <property name="focusable">False</property>
+  <property name="title" translatable="yes">Alignment</property>
+  <property name="model">
+    <object class="AdwEnumListModel">
+      <property name="enum-type">GtkAlign</property>
+    </object>
+  </property>
+  <property name="expression">
+    <closure type="gchararray" function="get_enum_short_name"/>
+  </property>
+</object>
+```
