@@ -71,9 +71,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         simple_action_group.add_action_entries(action_entries, this);
         this.insert_action_group("columnview", simple_action_group);
 
-        this.books.switch_page.connect(switch_page_handler);
-        rows_right_clicked.pressed.connect(rows_mouse_click_handler);
-        rows_right_clicked2.pressed.connect(rows_mouse_click_handler);
+        this.add_css_class("devel");
     }
 
     [GtkCallback]
@@ -222,6 +220,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         }
     }
 
+    [GtkCallback]
     private void switch_page_handler (Gtk.Widget page, uint page_num)
     {
         SimpleAction? action;
@@ -253,6 +252,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         }
     }
 
+    [GtkCallback]
     private void rows_mouse_click_handler(GestureClick gesture, int n_press, double x, double y)
     {
         // GLib.warning("Mouse: button = %u, n_press = %d", gesture.get_current_button(), n_press);
@@ -273,13 +273,46 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
                 Gtk.DialogFlags.MODAL, 
                 Gtk.MessageType.INFO, 
                 Gtk.ButtonsType.CLOSE,
-                "Double clicked.");
+                "Primary button double clicked.");
             message_dialog.response.connect((dialog, id) => {
                 dialog.destroy();
             });
+            message_dialog.secondary_text = "It's a bug if hard to fire this event.";
+            message_dialog.set_default_response(ResponseType.CLOSE);
+            var button = message_dialog.get_widget_for_response(ResponseType.CLOSE);
+            if (null != button) {
+                button.add_css_class("suggested-action");
+            }
             message_dialog.show();
         }
     }
+
+    [GtkCallback]
+    private void page_close_clicked_handler(Gtk.Button sender)
+    {
+        int response = 0;  // ResponseType.YES / NO
+        var message_dialog = new Gtk.MessageDialog(
+                                                    this, 
+                                                    Gtk.DialogFlags.MODAL, 
+                                                    Gtk.MessageType.INFO, 
+                                                    Gtk.ButtonsType.YES_NO,
+                                                    "Do you want to close this page?");
+        message_dialog.set_default_response(ResponseType.YES);
+        var button = message_dialog.get_widget_for_response(ResponseType.YES);
+        if (null != button) {
+            button.add_css_class("suggested-action");
+        }
+
+        message_dialog.secondary_text = "Notebook page tab widget close button clicked, page will be close, but not in fact.";
+        message_dialog.response.connect((dialog, id) => {
+            response = id;
+            GLib.warning("Message dialog response id(2): %d", response);
+            dialog.destroy();
+        });
+        message_dialog.show();
+
+        GLib.warning("Message dialog response id(1): %d", response);
+}
 
     private void show_name_handler(SimpleAction action, Variant? parameter)
     {

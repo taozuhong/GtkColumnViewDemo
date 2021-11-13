@@ -8,6 +8,7 @@
       <object class="GtkNotebook" id="books">
         <property name="visible">True</property>
         <property name="can-focus">True</property>
+        <signal name="switch-page" handler="switch_page_handler" />
         <child>
           <object class="GtkScrolledWindow" id="scr">
             <property name="hexpand">TRUE</property>
@@ -132,6 +133,7 @@
                 <child>
                     <object class="GtkGestureClick" id="rows_right_clicked">
                       <property name="button">0</property>
+                      <signal name="pressed" handler="rows_mouse_click_handler" />
                     </object>
                 </child>
               </object>
@@ -156,6 +158,7 @@
             <child>
               <object class="GtkButton">
                 <property name="icon-name">window-close</property>
+                <signal name="clicked" handler="page_close_clicked_handler" />
                 <style>
                   <class name="flat"/>
                 </style>
@@ -389,6 +392,7 @@
                 <child>
                     <object class="GtkGestureClick" id="rows_right_clicked2">
                       <property name="button">0</property>
+                      <signal name="pressed" handler="rows_mouse_click_handler" />
                     </object>
                 </child>
               </object>
@@ -413,6 +417,7 @@
             <child>
               <object class="GtkButton">
                 <property name="icon-name">window-close</property>
+                <signal name="clicked" handler="page_close_clicked_handler" />
                 <style>
                   <class name="flat"/>
                 </style>
