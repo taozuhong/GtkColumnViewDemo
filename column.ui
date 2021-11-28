@@ -5,252 +5,255 @@
     <property name="default-width">800</property>
     <property name="default-height">600</property>
     <child>
-      <object class="GtkNotebook" id="books">
-        <property name="visible">True</property>
-        <property name="can-focus">True</property>
-        <signal name="switch-page" handler="switch_page_handler" />
-        <child>
-          <object class="GtkScrolledWindow" id="scr">
-            <property name="hexpand">TRUE</property>
-            <property name="vexpand">TRUE</property>
-            <child>
-              <object class="GtkColumnView" id="columnview">
-                <property name="show-column-separators">TRUE</property>
-                <property name="show-row-separators">TRUE</property>
-                <property name="enable-rubberband">TRUE</property>
-                <property name="reorderable">TRUE</property>
-                <property name="model">
-                  <object class="GtkMultiSelection" id="selection">
-                    <property name="model">
-                      <object class="GtkSortListModel" id="sortlist">
-                        <property name="model">
-                          <object class="GtkDirectoryList" id="directorylist">
-                            <property name="attributes">standard::name,standard::icon,standard::type,standard::size,time::modified</property>
-                          </object>
-                        </property>
-                      </object>
-                    </property>
-                  </object>
-                </property>
-                <child>
-                  <object class="GtkColumnViewColumn" id="column_name">
-                    <property name="title">Name</property>
-                    <property name="resizable">1</property>
-                    <property name="expand">TRUE</property>
-                    <property name="header-menu">header_menu</property>
-                    <property name="factory">
-                      <object class="GtkSignalListItemFactory">
-                        <signal name="setup" handler="column_name_setup_handler" />
-                        <signal name="bind" handler="column_name_bind_handler" />
-                      </object>
-                    </property>
-                    <property name="sorter">
-                      <object class="GtkStringSorter" id="sorter_name">
-                        <property name="expression">
-                          <closure type="gchararray" function="get_file_name">
-                          </closure>
-                        </property>
-                      </object>
-                    </property>
-                  </object>
-                </child>  
-                <child>
-                  <object class="GtkColumnViewColumn" id="column_type">
-                    <property name="title">Type</property>
-                    <property name="resizable">FALSE</property>
-                    <property name="expand">TRUE</property>
-                    <property name="header-menu">header_menu</property>
-                    <property name="factory">
-                      <object class="GtkSignalListItemFactory">
-                        <signal name="setup" handler="column_type_setup_handler" />
-                        <signal name="bind" handler="column_type_bind_handler" />
-                      </object>
-                    </property>
-                    <property name="sorter">
-                      <object class="GtkNumericSorter" id="sorter_type">
-                        <property name="expression">
-                          <closure type="gint" function="get_file_type">
-                          </closure>
-                        </property>
-                        <property name="sort-order">GTK_SORT_ASCENDING</property>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkColumnViewColumn" id="column_size">
-                    <property name="title">Size</property>
-                    <property name="resizable">FALSE</property>
-                    <property name="expand">TRUE</property>
-                    <property name="header-menu">header_menu</property>
-                    <property name="factory">
-                      <object class="GtkSignalListItemFactory">
-                        <signal name="setup" handler="column_size_setup_handler" />
-                        <signal name="bind" handler="column_size_bind_handler" />
-                      </object>
-                    </property>
-                    <property name="sorter">
-                      <object class="GtkNumericSorter" id="sorter_size">
-                        <property name="expression">
-                          <closure type="gint64" function="get_file_size">
-                          </closure>
-                        </property>
-                        <property name="sort-order">GTK_SORT_ASCENDING</property>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkColumnViewColumn" id="column_date">
-                    <property name="title">Date modified</property>
-                    <property name="resizable">FALSE</property>
-                    <property name="expand">TRUE</property>
-                    <property name="header-menu">header_menu</property>
-                    <property name="factory">
-                      <object class="GtkSignalListItemFactory">
-                        <signal name="setup" handler="column_date_setup_handler" />
-                        <signal name="bind" handler="column_date_bind_handler" />
-                      </object>
-                    </property>
-                    <property name="sorter">
-                      <object class="GtkNumericSorter" id="sorter_datetime_modified">
-                        <property name="expression">
-                          <closure type="gint64" function="get_file_unixtime_modified">
-                          </closure>
-                        </property>
-                        <property name="sort-order">GTK_SORT_ASCENDING</property>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-                <child>
-                    <object class="GtkPopoverMenu" id="rows_popover_menu">
-                      <property name="position">bottom</property>
-                      <property name="has-arrow">FALSE</property>
-                      <property name="menu-model">rows_menu</property>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkGestureClick" id="rows_right_clicked">
-                      <property name="button">0</property>
-                      <signal name="pressed" handler="rows_mouse_click_handler" />
-                    </object>
-                </child>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child type="tab">
-          <object class="GtkBox">
-            <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
-            <child>
-              <object class="GtkImage">
-                <property name="icon-name">applications-science</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Builder Factory</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="icon-name">window-close</property>
-                <signal name="clicked" handler="page_close_clicked_handler" />
-                <style>
-                  <class name="flat"/>
-                </style>
-              </object>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkScrolledWindow" id="scr2">
-            <property name="hexpand">TRUE</property>
-            <property name="vexpand">TRUE</property>
-            <child>
-              <object class="GtkColumnView" id="columnview2">
-                <property name="show-column-separators">TRUE</property>
-                <property name="show-row-separators">TRUE</property>
-                <property name="enable-rubberband">TRUE</property>
-                <property name="reorderable">TRUE</property>
-                <property name="model">
-                  <object class="GtkMultiSelection" id="selection2">
-                    <property name="model">
-                      <object class="GtkSortListModel" id="sortlist2">
-                        <property name="model">
-                          <object class="GtkDirectoryList" id="directorylist2">
-                            <property name="attributes">standard::name,standard::icon,standard::type,standard::size,time::modified</property>
-                          </object>
-                        </property>
-                      </object>
-                    </property>
-                  </object>
-                </property>
-                <child>
-                  <object class="GtkColumnViewColumn" id="column_name2">
-                    <property name="title">Name</property>
-                    <property name="resizable">1</property>
-                    <property name="expand">TRUE</property>
-                    <property name="header-menu">header_menu</property>
-                    <property name="factory">
-                      <object class="GtkBuilderListItemFactory">
-                        <property name="bytes"><![CDATA[
-<?xml version="1.0" encoding="UTF-8"?>
-<interface>
-  <template class="GtkListItem">
-    <property name="child">
       <object class="GtkBox">
-        <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
-        <property name="spacing">20</property>
+        <property name="orientation">vertical</property>
         <child>
-          <object class="GtkImage">
-            <binding name="gicon">
-              <closure type="GIcon" function="get_icon_factory">
-                <lookup name="item">GtkListItem</lookup>
-              </closure>
-            </binding>
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <style>
+              <class name="toolbar"/>
+            </style>
+            <child>
+              <object class="GtkToggleButton" id="button_name">
+                <property name="active">True</property>
+                <property name="icon-name">format-justify-fill</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="button_type">
+                <property name="active">True</property>
+                <property name="icon-name">format-justify-fill</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="button_size">
+                <property name="active">True</property>
+                <property name="icon-name">format-justify-fill</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkToggleButton" id="button_date">
+                <property name="active">True</property>
+                <property name="icon-name">format-justify-fill</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
-          <object class="GtkLabel">
-            <property name="hexpand">TRUE</property>
-            <property name="xalign">0</property>
-            <binding name="label">
-              <closure type="gchararray" function="get_file_name_factory">
-                <lookup name="item">GtkListItem</lookup>
-              </closure>
-            </binding>
-          </object>
-        </child>
-      </object>
-    </property>
-  </template>
-</interface>
-                        ]]></property>
-                      </object>
-                    </property>
-                    <property name="sorter">
-                      <object class="GtkStringSorter" id="sorter_name2">
-                        <property name="expression">
-                          <closure type="gchararray" function="get_file_name">
-                          </closure>
+          <object class="GtkNotebook" id="books">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <signal name="switch-page" handler="switch_page_handler" />
+            <child>
+              <object class="GtkScrolledWindow" id="scr">
+                <property name="hexpand">TRUE</property>
+                <property name="vexpand">TRUE</property>
+                <child>
+                  <object class="GtkColumnView" id="columnview">
+                    <property name="show-column-separators">TRUE</property>
+                    <property name="show-row-separators">TRUE</property>
+                    <property name="enable-rubberband">TRUE</property>
+                    <property name="reorderable">TRUE</property>
+                    <property name="model">
+                      <object class="GtkMultiSelection" id="selection">
+                        <property name="model">
+                          <object class="GtkSortListModel" id="sortlist">
+                            <property name="model">
+                              <object class="GtkDirectoryList" id="directorylist">
+                                <property name="attributes">standard::name,standard::icon,standard::type,standard::size,time::modified</property>
+                              </object>
+                            </property>
+                          </object>
                         </property>
                       </object>
                     </property>
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_name">
+                        <property name="title">Name</property>
+                        <property name="resizable">1</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkSignalListItemFactory">
+                            <signal name="setup" handler="column_name_setup_handler" />
+                            <signal name="bind" handler="column_name_bind_handler" />
+                          </object>
+                        </property>
+                        <property name="sorter">
+                          <object class="GtkStringSorter" id="sorter_name">
+                            <property name="expression">
+                              <closure type="gchararray" function="get_file_name">
+                              </closure>
+                            </property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>  
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_type">
+                        <property name="title">Type</property>
+                        <property name="resizable">FALSE</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkSignalListItemFactory">
+                            <signal name="setup" handler="column_type_setup_handler" />
+                            <signal name="bind" handler="column_type_bind_handler" />
+                          </object>
+                        </property>
+                        <property name="sorter">
+                          <object class="GtkNumericSorter" id="sorter_type">
+                            <property name="expression">
+                              <closure type="gint" function="get_file_type">
+                              </closure>
+                            </property>
+                            <property name="sort-order">GTK_SORT_ASCENDING</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_size">
+                        <property name="title">Size</property>
+                        <property name="resizable">FALSE</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkSignalListItemFactory">
+                            <signal name="setup" handler="column_size_setup_handler" />
+                            <signal name="bind" handler="column_size_bind_handler" />
+                          </object>
+                        </property>
+                        <property name="sorter">
+                          <object class="GtkNumericSorter" id="sorter_size">
+                            <property name="expression">
+                              <closure type="gint64" function="get_file_size">
+                              </closure>
+                            </property>
+                            <property name="sort-order">GTK_SORT_ASCENDING</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_date">
+                        <property name="title">Date modified</property>
+                        <property name="resizable">FALSE</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkSignalListItemFactory">
+                            <signal name="setup" handler="column_date_setup_handler" />
+                            <signal name="bind" handler="column_date_bind_handler" />
+                          </object>
+                        </property>
+                        <property name="sorter">
+                          <object class="GtkNumericSorter" id="sorter_datetime_modified">
+                            <property name="expression">
+                              <closure type="gint64" function="get_file_unixtime_modified">
+                              </closure>
+                            </property>
+                            <property name="sort-order">GTK_SORT_ASCENDING</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                        <object class="GtkPopoverMenu" id="rows_popover_menu">
+                          <property name="position">bottom</property>
+                          <property name="has-arrow">FALSE</property>
+                          <property name="menu-model">rows_menu</property>
+                        </object>
+                    </child>
+                    <child>
+                        <object class="GtkGestureClick" id="rows_right_clicked">
+                          <property name="button">0</property>
+                          <signal name="pressed" handler="rows_mouse_click_handler" />
+                        </object>
+                    </child>
                   </object>
-                </child>  
+                </child>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
                 <child>
-                  <object class="GtkColumnViewColumn" id="column_type2">
-                    <property name="title">Type</property>
-                    <property name="resizable">FALSE</property>
-                    <property name="expand">TRUE</property>
-                    <property name="header-menu">header_menu</property>
-                    <property name="factory">
-                      <object class="GtkBuilderListItemFactory">
-                        <property name="bytes"><![CDATA[
+                  <object class="GtkImage">
+                    <property name="icon-name">applications-science</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Signal with editing</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="icon-name">window-close</property>
+                    <signal name="clicked" handler="page_close_clicked_handler" />
+                    <style>
+                      <class name="flat"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow" id="scr2">
+                <property name="hexpand">TRUE</property>
+                <property name="vexpand">TRUE</property>
+                <child>
+                  <object class="GtkColumnView" id="columnview2">
+                    <property name="show-column-separators">TRUE</property>
+                    <property name="show-row-separators">TRUE</property>
+                    <property name="enable-rubberband">TRUE</property>
+                    <property name="reorderable">TRUE</property>
+                    <property name="model">
+                      <object class="GtkMultiSelection" id="selection2">
+                        <property name="model">
+                          <object class="GtkSortListModel" id="sortlist2">
+                            <property name="model">
+                              <object class="GtkDirectoryList" id="directorylist2">
+                                <property name="attributes">standard::name,standard::icon,standard::type,standard::size,time::modified</property>
+                              </object>
+                            </property>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_name2">
+                        <property name="title">Name</property>
+                        <property name="resizable">1</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="resource">/com/github/taozuhong/GtkColumnViewDemo/column_item_name.ui</property>
+                          </object>
+                        </property>
+                        <property name="sorter">
+                          <object class="GtkStringSorter" id="sorter_name2">
+                            <property name="expression">
+                              <closure type="gchararray" function="get_file_name">
+                              </closure>
+                            </property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>  
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_type2">
+                        <property name="title">Type</property>
+                        <property name="resizable">FALSE</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="bytes"><![CDATA[
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template class="GtkListItem">
@@ -267,160 +270,128 @@
     </property>
   </template>
 </interface>
-                        ]]></property>
-                      </object>
-                    </property>
-                    <property name="sorter">
-                      <object class="GtkNumericSorter" id="sorter_type2">
-                        <property name="expression">
-                          <closure type="gint" function="get_file_type">
-                          </closure>
+                            ]]></property>
+                          </object>
                         </property>
-                        <property name="sort-order">GTK_SORT_ASCENDING</property>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkColumnViewColumn" id="column_size2">
-                    <property name="title">Size</property>
-                    <property name="resizable">FALSE</property>
-                    <property name="expand">TRUE</property>
-                    <property name="header-menu">header_menu</property>
-                    <property name="factory">
-                      <object class="GtkSignalListItemFactory">
-                        <signal name="setup" handler="column_size2_setup_handler" />
-                        <signal name="bind" handler="column_size2_bind_handler" />
-                      </object>
-                    </property>
-                    <property name="sorter">
-                      <object class="GtkNumericSorter" id="sorter_size2">
-                        <property name="expression">
-                          <closure type="gint64" function="get_file_size">
-                          </closure>
+                        <property name="sorter">
+                          <object class="GtkNumericSorter" id="sorter_type2">
+                            <property name="expression">
+                              <closure type="gint" function="get_file_type">
+                              </closure>
+                            </property>
+                            <property name="sort-order">GTK_SORT_ASCENDING</property>
+                          </object>
                         </property>
-                        <property name="sort-order">GTK_SORT_ASCENDING</property>
                       </object>
-                    </property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkColumnViewColumn" id="column_date2">
-                    <property name="title">Date modified</property>
-                    <property name="resizable">FALSE</property>
-                    <property name="expand">TRUE</property>
-                    <property name="header-menu">header_menu</property>
-                    <property name="factory">
-                      <object class="GtkSignalListItemFactory">
-                        <signal name="setup" handler="column_date2_setup_handler" />
-                        <signal name="bind" handler="column_date2_bind_handler" />
-                      </object>
-                    </property>
-                    <property name="sorter">
-                      <object class="GtkNumericSorter" id="sorter_datetime_modified2">
-                        <property name="expression">
-                          <closure type="gint64" function="get_file_unixtime_modified">
-                          </closure>
+                    </child>
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_size2">
+                        <property name="title">Size</property>
+                        <property name="resizable">FALSE</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkSignalListItemFactory">
+                            <signal name="setup" handler="column_size2_setup_handler" />
+                            <signal name="bind" handler="column_size2_bind_handler" />
+                          </object>
                         </property>
-                        <property name="sort-order">GTK_SORT_ASCENDING</property>
-                      </object>
-                    </property>
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkColumnViewColumn" id="column_prop">
-                    <property name="title">Property</property>
-                    <property name="resizable">FALSE</property>
-                    <property name="expand">TRUE</property>
-                    <property name="header-menu">header_menu</property>
-                    <property name="factory">
-                      <object class="GtkBuilderListItemFactory">
-                        <property name="bytes"><![CDATA[
-<?xml version="1.0" encoding="UTF-8"?>
-<interface>
-  <template class="GtkListItem">
-    <property name="child">
-      <object class="GtkBox">
-        <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
-        <property name="spacing">20</property>
-        <child>
-          <object class="GtkLabel">
-            <property name="hexpand">TRUE</property>
-            <property name="xalign">0</property>
-            <binding name="label">
-              <lookup type='GtkBox' name="orientation">
-                <lookup name="child">GtkListItem</lookup>
-              </lookup>
-            </binding>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel">
-            <property name="hexpand">TRUE</property>
-            <property name="xalign">1.0</property>
-            <binding name="label">
-              <lookup type='GtkBox' name="css_name">
-                <lookup name="child">GtkListItem</lookup>
-              </lookup>
-            </binding>
-          </object>
-        </child>
-      </object>
-    </property>
-  </template>
-</interface>
-                        ]]></property>
-                      </object>
-                    </property>
-                    <property name="sorter">
-                      <object class="GtkNumericSorter" id="sorter_css">
-                        <property name="expression">
-                          <constant type='gint64'>100</constant>
+                        <property name="sorter">
+                          <object class="GtkNumericSorter" id="sorter_size2">
+                            <property name="expression">
+                              <closure type="gint64" function="get_file_size">
+                              </closure>
+                            </property>
+                            <property name="sort-order">GTK_SORT_ASCENDING</property>
+                          </object>
                         </property>
-                        <property name="sort-order">GTK_SORT_ASCENDING</property>
                       </object>
-                    </property>
+                    </child>
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_date2">
+                        <property name="title">Date modified</property>
+                        <property name="resizable">FALSE</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkSignalListItemFactory">
+                            <signal name="setup" handler="column_date2_setup_handler" />
+                            <signal name="bind" handler="column_date2_bind_handler" />
+                          </object>
+                        </property>
+                        <property name="sorter">
+                          <object class="GtkNumericSorter" id="sorter_datetime_modified2">
+                            <property name="expression">
+                              <closure type="gint64" function="get_file_unixtime_modified">
+                              </closure>
+                            </property>
+                            <property name="sort-order">GTK_SORT_ASCENDING</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_prop">
+                        <property name="title">Property</property>
+                        <property name="resizable">FALSE</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="resource">/com/github/taozuhong/GtkColumnViewDemo/column_item_property.ui</property>
+                          </object>
+                        </property>
+                        <property name="sorter">
+                          <object class="GtkNumericSorter" id="sorter_css">
+                            <property name="expression">
+                              <constant type='gint64'>100</constant>
+                            </property>
+                            <property name="sort-order">GTK_SORT_ASCENDING</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                        <object class="GtkPopoverMenu" id="rows_popover_menu2">
+                          <property name="position">bottom</property>
+                          <property name="has-arrow">FALSE</property>
+                          <property name="menu-model">rows_menu</property>
+                        </object>
+                    </child>
+                    <child>
+                        <object class="GtkGestureClick" id="rows_right_clicked2">
+                          <property name="button">0</property>
+                          <signal name="pressed" handler="rows_mouse_click_handler" />
+                        </object>
+                    </child>
                   </object>
-                </child>
-                <child>
-                    <object class="GtkPopoverMenu" id="rows_popover_menu2">
-                      <property name="position">bottom</property>
-                      <property name="has-arrow">FALSE</property>
-                      <property name="menu-model">rows_menu</property>
-                    </object>
-                </child>
-                <child>
-                    <object class="GtkGestureClick" id="rows_right_clicked2">
-                      <property name="button">0</property>
-                      <signal name="pressed" handler="rows_mouse_click_handler" />
-                    </object>
                 </child>
               </object>
             </child>
-          </object>
-        </child>
-        <child type="tab">
-          <object class="GtkBox">
-            <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
-            <child>
-              <object class="GtkImage">
-                <property name="icon-name">applications-utilities</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkLabel">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="label" translatable="yes">Signal Factory</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkButton">
-                <property name="icon-name">window-close</property>
-                <signal name="clicked" handler="page_close_clicked_handler" />
-                <style>
-                  <class name="flat"/>
-                </style>
+            <child type="tab">
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon-name">applications-utilities</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Builder + Signal</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="icon-name">window-close</property>
+                    <signal name="clicked" handler="page_close_clicked_handler" />
+                    <style>
+                      <class name="flat"/>
+                    </style>
+                  </object>
+                </child>
               </object>
             </child>
           </object>

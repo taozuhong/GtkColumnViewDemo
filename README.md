@@ -7,12 +7,13 @@ The GtkColumnViewDemo app integrates with following GTK4 features:
 3. Context menu with model and submenu support
 4. GtkNotebook with a custom tab widget
 5. GtkBuilder with GtkTemplate / GtkChild / GtkCallback support
-6. GtkBuilderListItemFactory
+6. GtkBuilderListItemFactory with resource and bytes support
 7. GtkSignalListItemFactory
 8. Shortcut register and handle
 9. GtkMenuButton/GtkSpinButton/GtkEntry/GtkPopover/GtkComboBoxText/... usage
 10. GtkExpression usage
 11. MessageDialog with default button andd css style
+12. Toolbar with dynamic binding support
 
 # Screenshot
 ![Edit mode with GtkSignalListItemFactory](./images/screenshot-1.png)

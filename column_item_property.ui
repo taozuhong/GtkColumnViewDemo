@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkBox">
+        <property name="orientation">horizontal</property>
+        <property name="spacing">20</property>
+        <child>
+          <object class="GtkLabel">
+            <property name="hexpand">TRUE</property>
+            <property name="xalign">0</property>
+            <binding name="label">
+              <lookup type='GtkBox' name="orientation">
+                <lookup name="child">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="hexpand">TRUE</property>
+            <property name="xalign">1.0</property>
+            <binding name="label">
+              <lookup type='GtkBox' name="css_name">
+                <lookup name="child">GtkListItem</lookup>
+              </lookup>
+            </binding>
+          </object>
+        </child>
+      </object>
+    </property>
+  </template>
+</interface>

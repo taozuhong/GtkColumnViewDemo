@@ -3,6 +3,14 @@ using Gtk;
 [GtkTemplate (ui = "/com/github/taozuhong/GtkColumnViewDemo/column.ui")]
 public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
+    private unowned Gtk.ToggleButton button_name;
+    [GtkChild]
+    private unowned Gtk.ToggleButton button_type;
+    [GtkChild]
+    private unowned Gtk.ToggleButton button_size;
+    [GtkChild]
+    private unowned Gtk.ToggleButton button_date;
+    [GtkChild]
     private unowned Gtk.Notebook books;
     [GtkChild]
     private unowned Gtk.ColumnView columnview;
@@ -42,6 +50,10 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     private unowned Gtk.PopoverMenu rows_popover_menu2;
 
     private SimpleActionGroup simple_action_group;
+    private unowned Binding binding_name;
+    private unowned Binding binding_type;
+    private unowned Binding binding_size;
+    private unowned Binding binding_date;
 
     const ActionEntry[] action_entries = {
         { "show-name", show_name_handler, null, "true", null },
@@ -66,6 +78,12 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
 
         sortlist.sorter = columnview.sorter;
         sortlist2.sorter = columnview2.sorter;
+
+        var bind_flags = BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL;
+        binding_name = this.button_name.bind_property("active", this.column_name, "visible", bind_flags);
+        binding_type = this.button_type.bind_property("active", this.column_type, "visible", bind_flags);
+        binding_size = this.button_size.bind_property("active", this.column_size, "visible", bind_flags);
+        binding_date = this.button_date.bind_property("active", this.column_date, "visible", bind_flags);
 
         simple_action_group = new SimpleActionGroup();
         simple_action_group.add_action_entries(action_entries, this);
@@ -223,6 +241,10 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkCallback]
     private void switch_page_handler (Gtk.Widget page, uint page_num)
     {
+        binding_name.unbind();
+        binding_type.unbind();
+        binding_size.unbind();
+        binding_date.unbind();
         SimpleAction? action;
         if (0 == page_num)
         {
@@ -237,6 +259,12 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
 
             action = simple_action_group.lookup_action("show-date") as SimpleAction;
             action?.set_state (new Variant.boolean(column_date.visible));
+
+            var bind_flags = BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL;
+            binding_name = this.button_name.bind_property("active", this.column_name, "visible", bind_flags);
+            binding_type = this.button_type.bind_property("active", this.column_type, "visible", bind_flags);
+            binding_size = this.button_size.bind_property("active", this.column_size, "visible", bind_flags);
+            binding_date = this.button_date.bind_property("active", this.column_date, "visible", bind_flags);    
         } else {
             action = simple_action_group.lookup_action("show-name") as SimpleAction;
             action?.set_state (new Variant.boolean(column_name2.visible));
@@ -249,6 +277,12 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
 
             action = simple_action_group.lookup_action("show-date") as SimpleAction;
             action?.set_state (new Variant.boolean(column_date2.visible));
+
+            var bind_flags = BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL;
+            binding_name = this.button_name.bind_property("active", this.column_name2, "visible", bind_flags);
+            binding_type = this.button_type.bind_property("active", this.column_type2, "visible", bind_flags);
+            binding_size = this.button_size.bind_property("active", this.column_size2, "visible", bind_flags);
+            binding_date = this.button_date.bind_property("active", this.column_date2, "visible", bind_flags);    
         }
     }
 
