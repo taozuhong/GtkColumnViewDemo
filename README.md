@@ -12,7 +12,7 @@ The GtkColumnViewDemo app integrates with following GTK4 features:
 8. Shortcut register and handle
 9. GtkMenuButton/GtkSpinButton/GtkEntry/GtkPopover/GtkComboBoxText/... usage
 10. GtkExpression usage
-11. MessageDialog with default button andd css style
+11. MessageDialog with default button and css style
 12. Toolbar with dynamic binding support
 
 # Screenshot
