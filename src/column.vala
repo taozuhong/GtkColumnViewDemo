@@ -1,6 +1,6 @@
 using Gtk;
 
-[GtkTemplate (ui = "/com/github/taozuhong/GtkColumnViewDemo/column.ui")]
+[GtkTemplate (ui = "/com/github/taozuhong/GtkColumnViewDemo/ui/column.ui")]
 public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
     private unowned Gtk.ToggleButton button_name;
@@ -346,7 +346,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         message_dialog.show();
 
         GLib.warning("Message dialog response id(1): %d", response);
-}
+    }
 
     private void show_name_handler(SimpleAction action, Variant? parameter)
     {

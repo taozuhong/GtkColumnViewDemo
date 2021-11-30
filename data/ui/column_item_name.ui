@@ -3,7 +3,7 @@
   <template class="GtkListItem">
     <property name="child">
       <object class="GtkBox">
-        <property name="orientation">GTK_ORIENTATION_HORIZONTAL</property>
+        <property name="orientation">horizontal</property>
         <property name="spacing">20</property>
         <child>
           <object class="GtkImage">

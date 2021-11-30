@@ -1,13 +1,16 @@
-project('GtkColumnViewDemo', ['vala', 'c'])
+project ('GtkColumnViewDemo',
+         ['vala', 'c'],
+         version: '1.1',
+         license: 'LGPLv2+',
+         meson_version: '>= 0.50.0',
+)
 
-gtkdep = dependency('gtk4')
+meson_i18n = import ('i18n')
+meson_gnome = import ('gnome')
 
-gnome=import('gnome')
-resources = gnome.compile_resources('resources','column.gresource.xml')
-
-sourcefiles = [
-    'column.vala',
-    'application.vala'
+dependencies = [
+  dependency('gtk4', version: '>= 4.0'),
 ]
 
-executable('GtkColumnViewDemo', sourcefiles, resources, dependencies: gtkdep, export_dynamic: true, install: false)
+subdir('data')
+subdir('src')

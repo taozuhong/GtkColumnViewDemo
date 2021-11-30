@@ -16,8 +16,8 @@ The GtkColumnViewDemo app integrates with following GTK4 features:
 12. Toolbar with dynamic binding support
 
 # Screenshot
-![Edit mode with GtkSignalListItemFactory](./images/screenshot-1.png)
-![View mode with mixed GtkListItemFactory](./images/screenshot-2.png)
+![Edit mode with GtkSignalListItemFactory](./docs/images/screenshot-1.png)
+![View mode with mixed GtkListItemFactory](./docs/images/screenshot-2.png)
 
 # Expression examples
 __Expression with GtkClosureExpression(global) + GtkPropertyExpression__

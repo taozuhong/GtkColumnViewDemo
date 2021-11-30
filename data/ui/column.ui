@@ -232,7 +232,7 @@
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkBuilderListItemFactory">
-                            <property name="resource">/com/github/taozuhong/GtkColumnViewDemo/column_item_name.ui</property>
+                            <property name="resource">/com/github/taozuhong/GtkColumnViewDemo/ui/column_item_name.ui</property>
                           </object>
                         </property>
                         <property name="sorter">
@@ -338,7 +338,7 @@
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkBuilderListItemFactory">
-                            <property name="resource">/com/github/taozuhong/GtkColumnViewDemo/column_item_property.ui</property>
+                            <property name="resource">/com/github/taozuhong/GtkColumnViewDemo/ui/column_item_property.ui</property>
                           </object>
                         </property>
                         <property name="sorter">
