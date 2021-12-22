@@ -36,6 +36,17 @@ public class GtkColumnViewDemoApp : Gtk.Application {
 }
 
 int main (string[] args) {
+    GLib.warning ("ODBC version: %d", ODBC.VER);
+    ODBC.Environment env;
+    if (ODBC.SUCCESS == ODBC.Environment.AllocEnv(out env)) {
+        char name_buf[250] = { '\0' };
+        char desc_buf[250] = { '\0' };
+        short name_length, name_length2;
+        short retval = env.DataSources(ODBC.FETCH_FIRST, name_buf, 250, out name_length, desc_buf, 250, out name_length2);
+        if (ODBC.SUCCESS == retval) {
+            GLib.warning ("ODBC data source: ");
+        }
+    }
     var app = new GtkColumnViewDemoApp ();
     return app.run (args);
 }

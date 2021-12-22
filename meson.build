@@ -6,6 +6,7 @@ gnome=import('gnome')
 resources = gnome.compile_resources('resources','column.gresource.xml')
 
 sourcefiles = [
+    'odbc.vapi',
     'column.vala',
     'application.vala'
 ]
