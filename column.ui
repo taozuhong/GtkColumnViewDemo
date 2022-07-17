@@ -55,11 +55,11 @@
                     <property name="enable-rubberband">TRUE</property>
                     <property name="reorderable">TRUE</property>
                     <property name="model">
-                      <object class="GtkMultiSelection" id="selection">
+                      <object class="GtkMultiSelection" id="selection_signal">
                         <property name="model">
-                          <object class="GtkSortListModel" id="sortlist">
+                          <object class="GtkSortListModel" id="sort_model_signal">
                             <property name="model">
-                              <object class="GtkDirectoryList" id="directorylist">
+                              <object class="GtkDirectoryList" id="directory_list_signal">
                                 <property name="attributes">standard::name,standard::icon,standard::type,standard::size,time::modified</property>
                               </object>
                             </property>
@@ -80,7 +80,7 @@
                           </object>
                         </property>
                         <property name="sorter">
-                          <object class="GtkStringSorter" id="sorter_name">
+                          <object class="GtkStringSorter">
                             <property name="expression">
                               <closure type="gchararray" function="get_file_name">
                               </closure>
@@ -102,7 +102,7 @@
                           </object>
                         </property>
                         <property name="sorter">
-                          <object class="GtkNumericSorter" id="sorter_type">
+                          <object class="GtkNumericSorter">
                             <property name="expression">
                               <closure type="gint" function="get_file_type">
                               </closure>
@@ -125,7 +125,7 @@
                           </object>
                         </property>
                         <property name="sorter">
-                          <object class="GtkNumericSorter" id="sorter_size">
+                          <object class="GtkNumericSorter">
                             <property name="expression">
                               <closure type="gint64" function="get_file_size">
                               </closure>
@@ -137,7 +137,7 @@
                     </child>
                     <child>
                       <object class="GtkColumnViewColumn" id="signal_date">
-                        <property name="title">Date modified</property>
+                        <property name="title">Date</property>
                         <property name="resizable">FALSE</property>
                         <property name="expand">TRUE</property>
                         <property name="header-menu">header_menu</property>
@@ -148,9 +148,9 @@
                           </object>
                         </property>
                         <property name="sorter">
-                          <object class="GtkNumericSorter" id="sorter_datetime_modified">
+                          <object class="GtkNumericSorter">
                             <property name="expression">
-                              <closure type="gint64" function="get_file_unixtime_modified">
+                              <closure type="gint64" function="get_file_date">
                               </closure>
                             </property>
                             <property name="sort-order">GTK_SORT_ASCENDING</property>
@@ -212,11 +212,11 @@
                     <property name="enable-rubberband">TRUE</property>
                     <property name="reorderable">TRUE</property>
                     <property name="model">
-                      <object class="GtkMultiSelection" id="selection2">
+                      <object class="GtkMultiSelection" id="selection_builder">
                         <property name="model">
-                          <object class="GtkSortListModel" id="sortlist2">
+                          <object class="GtkSortListModel" id="sort_model_builder">
                             <property name="model">
-                              <object class="GtkDirectoryList" id="directorylist2">
+                              <object class="GtkDirectoryList" id="directory_list_builder">
                                 <property name="attributes">standard::name,standard::icon,standard::type,standard::size,time::modified</property>
                               </object>
                             </property>
@@ -232,11 +232,11 @@
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkBuilderListItemFactory">
-                            <property name="resource">/taozuhong/datagrid/column_item_name.ui</property>
+                            <property name="resource">/taozuhong/datagrid/builder_column_name.ui</property>
                           </object>
                         </property>
                         <property name="sorter">
-                          <object class="GtkStringSorter" id="sorter_name2">
+                          <object class="GtkStringSorter">
                             <property name="expression">
                               <closure type="gchararray" function="get_file_name">
                               </closure>
@@ -253,11 +253,11 @@
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkBuilderListItemFactory">
-                            <property name="resource">/taozuhong/datagrid/column_item_type.ui</property>
+                            <property name="resource">/taozuhong/datagrid/builder_column_type.ui</property>
                           </object>
                         </property>
                         <property name="sorter">
-                          <object class="GtkNumericSorter" id="sorter_type2">
+                          <object class="GtkNumericSorter">
                             <property name="expression">
                               <closure type="gint" function="get_file_type">
                               </closure>
@@ -275,11 +275,11 @@
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkBuilderListItemFactory">
-                            <property name="resource">/taozuhong/datagrid/column_item_size.ui</property>
+                            <property name="resource">/taozuhong/datagrid/builder_column_size.ui</property>
                           </object>
                         </property>
                         <property name="sorter">
-                          <object class="GtkNumericSorter" id="sorter_size2">
+                          <object class="GtkNumericSorter">
                             <property name="expression">
                               <closure type="gint64" function="get_file_size">
                               </closure>
@@ -291,19 +291,19 @@
                     </child>
                     <child>
                       <object class="GtkColumnViewColumn" id="builder_date">
-                        <property name="title">Date modified</property>
+                        <property name="title">Date</property>
                         <property name="resizable">FALSE</property>
                         <property name="expand">TRUE</property>
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkBuilderListItemFactory">
-                            <property name="resource">/taozuhong/datagrid/column_item_date.ui</property>
+                            <property name="resource">/taozuhong/datagrid/builder_column_date.ui</property>
                           </object>
                         </property>
                         <property name="sorter">
-                          <object class="GtkNumericSorter" id="sorter_datetime_modified2">
+                          <object class="GtkNumericSorter">
                             <property name="expression">
-                              <closure type="gint64" function="get_file_unixtime_modified">
+                              <closure type="gint64" function="get_file_date">
                               </closure>
                             </property>
                             <property name="sort-order">GTK_SORT_ASCENDING</property>
@@ -319,11 +319,11 @@
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkBuilderListItemFactory">
-                            <property name="resource">/taozuhong/datagrid/column_item_property.ui</property>
+                            <property name="resource">/taozuhong/datagrid/builder_column_property.ui</property>
                           </object>
                         </property>
                         <property name="sorter">
-                          <object class="GtkNumericSorter" id="sorter_css">
+                          <object class="GtkNumericSorter">
                             <property name="expression">
                               <constant type='gint64'>100</constant>
                             </property>

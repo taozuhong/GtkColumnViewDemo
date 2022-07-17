@@ -2,10 +2,10 @@
 <gresources>
   <gresource prefix="/taozuhong/datagrid">
     <file preprocess="xml-stripblanks">column.ui</file>
-    <file preprocess="xml-stripblanks">column_item_name.ui</file>
-    <file preprocess="xml-stripblanks">column_item_date.ui</file>
-    <file preprocess="xml-stripblanks">column_item_property.ui</file>
-    <file preprocess="xml-stripblanks">column_item_size.ui</file>
-    <file preprocess="xml-stripblanks">column_item_type.ui</file>
+    <file preprocess="xml-stripblanks">builder_column_name.ui</file>
+    <file preprocess="xml-stripblanks">builder_column_date.ui</file>
+    <file preprocess="xml-stripblanks">builder_column_property.ui</file>
+    <file preprocess="xml-stripblanks">builder_column_size.ui</file>
+    <file preprocess="xml-stripblanks">builder_column_type.ui</file>
   </gresource>
 </gresources>

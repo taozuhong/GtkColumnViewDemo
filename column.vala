@@ -17,13 +17,13 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
     private unowned Gtk.ColumnView view_builder;
     [GtkChild]
-    private unowned Gtk.DirectoryList directorylist;
+    private unowned Gtk.DirectoryList directory_list_signal;
     [GtkChild]
-    private unowned Gtk.DirectoryList directorylist2;
+    private unowned Gtk.DirectoryList directory_list_builder;
     [GtkChild]
-    private unowned Gtk.SortListModel sortlist;
+    private unowned Gtk.SortListModel sort_model_signal;
     [GtkChild]
-    private unowned Gtk.SortListModel sortlist2;
+    private unowned Gtk.SortListModel sort_model_builder;
     [GtkChild]
     private unowned Gtk.ColumnViewColumn signal_name;
     [GtkChild]
@@ -73,11 +73,11 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         Object (application: app);
         
         File file = File.new_for_path(".");
-        directorylist.set_file(file);
-        directorylist2.set_file(file);
+        directory_list_signal.set_file(file);
+        directory_list_builder.set_file(file);
 
-        sortlist.sorter = view_signal.sorter;
-        sortlist2.sorter = view_builder.sorter;
+        sort_model_signal.sorter = view_signal.sorter;
+        sort_model_builder.sorter = view_builder.sorter;
 
         var bind_flags = BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL;
         binding_name = this.button_name.bind_property("active", this.signal_name, "visible", bind_flags);
@@ -459,7 +459,6 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 }
 
-
 Icon? get_icon_factory (Gtk.ListItem item, FileInfo? info) {
     if (null == info) {
         return null;
@@ -529,7 +528,7 @@ int64 get_file_size (FileInfo? info) {
     }
 }
 
-int64 get_file_unixtime_modified (FileInfo? info) {
+int64 get_file_date (FileInfo? info) {
     if (null == info) {
         return -1;
     } else {
