@@ -1,6 +1,6 @@
 using Gtk;
 
-[GtkTemplate (ui = "/com/github/taozuhong/GtkColumnViewDemo/column.ui")]
+[GtkTemplate (ui = "/taozuhong/datagrid/column.ui")]
 public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
     private unowned Gtk.ToggleButton button_name;
@@ -13,9 +13,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
     private unowned Gtk.Notebook books;
     [GtkChild]
-    private unowned Gtk.ColumnView columnview;
+    private unowned Gtk.ColumnView view_signal;
     [GtkChild]
-    private unowned Gtk.ColumnView columnview2;
+    private unowned Gtk.ColumnView view_builder;
     [GtkChild]
     private unowned Gtk.DirectoryList directorylist;
     [GtkChild]
@@ -25,21 +25,21 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
     private unowned Gtk.SortListModel sortlist2;
     [GtkChild]
-    private unowned Gtk.ColumnViewColumn column_name;
+    private unowned Gtk.ColumnViewColumn signal_name;
     [GtkChild]
-    private unowned Gtk.ColumnViewColumn column_type;
+    private unowned Gtk.ColumnViewColumn signal_type;
     [GtkChild]
-    private unowned Gtk.ColumnViewColumn column_size;
+    private unowned Gtk.ColumnViewColumn signal_size;
     [GtkChild]
-    private unowned Gtk.ColumnViewColumn column_date;
+    private unowned Gtk.ColumnViewColumn signal_date;
     [GtkChild]
-    private unowned Gtk.ColumnViewColumn column_name2;
+    private unowned Gtk.ColumnViewColumn builder_name;
     [GtkChild]
-    private unowned Gtk.ColumnViewColumn column_type2;
+    private unowned Gtk.ColumnViewColumn builder_type;
     [GtkChild]
-    private unowned Gtk.ColumnViewColumn column_size2;
+    private unowned Gtk.ColumnViewColumn builder_size;
     [GtkChild]
-    private unowned Gtk.ColumnViewColumn column_date2;
+    private unowned Gtk.ColumnViewColumn builder_date;
     [GtkChild]
     private unowned Gtk.GestureClick rows_right_clicked;
     [GtkChild]
@@ -76,14 +76,14 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         directorylist.set_file(file);
         directorylist2.set_file(file);
 
-        sortlist.sorter = columnview.sorter;
-        sortlist2.sorter = columnview2.sorter;
+        sortlist.sorter = view_signal.sorter;
+        sortlist2.sorter = view_builder.sorter;
 
         var bind_flags = BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL;
-        binding_name = this.button_name.bind_property("active", this.column_name, "visible", bind_flags);
-        binding_type = this.button_type.bind_property("active", this.column_type, "visible", bind_flags);
-        binding_size = this.button_size.bind_property("active", this.column_size, "visible", bind_flags);
-        binding_date = this.button_date.bind_property("active", this.column_date, "visible", bind_flags);
+        binding_name = this.button_name.bind_property("active", this.signal_name, "visible", bind_flags);
+        binding_type = this.button_type.bind_property("active", this.signal_type, "visible", bind_flags);
+        binding_size = this.button_size.bind_property("active", this.signal_size, "visible", bind_flags);
+        binding_date = this.button_date.bind_property("active", this.signal_date, "visible", bind_flags);
 
         simple_action_group = new SimpleActionGroup();
         simple_action_group.add_action_entries(action_entries, this);
@@ -93,7 +93,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void column_name_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_name_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.Entry entry = new Gtk.Entry();
         entry.focusable = true;
@@ -105,7 +105,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void column_name_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_name_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.Entry entry = listitem.child as Gtk.Entry;
         FileInfo? info = listitem.item as FileInfo;
@@ -117,7 +117,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void column_type_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_type_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         string[] type_array = { "UNKNOWN", "REGULAR", "DIRECTORY", "SYMBOLIC_LINK", "SPECIAL", "SHORTCUT", "MOUNTABLE" };
         Gtk.ComboBoxText dropdown = new Gtk.ComboBoxText.with_entry();
@@ -130,7 +130,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void column_type_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_type_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.ComboBoxText dropdown = listitem.child as Gtk.ComboBoxText;
         FileInfo? info = listitem.item as FileInfo;
@@ -142,7 +142,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void column_size_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_size_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.Adjustment adjustment = new Gtk.Adjustment(0, 0, 1000000, 1, 10, 0);
         Gtk.SpinButton spin_button = new Gtk.SpinButton(adjustment, 1.0, 2);
@@ -152,7 +152,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void column_size_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_size_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.SpinButton spin_button = listitem.child as Gtk.SpinButton;
         FileInfo? info = listitem.item as FileInfo;
@@ -164,7 +164,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void column_date_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_date_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.Popover popover = new Gtk.Popover();
         Gtk.MenuButton button = new Gtk.MenuButton();
@@ -185,7 +185,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void column_date_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_date_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.MenuButton button = listitem.child as Gtk.MenuButton;
         FileInfo? info = listitem.item as FileInfo;
@@ -197,16 +197,16 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         }
     }
 
-    [GtkCallback]
-    private void column_size2_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    //[GtkCallback]
+    private void builder_size_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.Label label = new Gtk.Label("");
         label.xalign = 1.0f;
         listitem.child = label;
     }
 
-    [GtkCallback]
-    private void column_size2_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    //[GtkCallback]
+    private void builder_size_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.Label label = listitem.child as Gtk.Label;
         FileInfo? info = listitem.item as FileInfo;
@@ -217,16 +217,16 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         }
     }
 
-    [GtkCallback]
-    private void column_date2_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    //[GtkCallback]
+    private void builder_date_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.Label label = new Gtk.Label("");
         label.xalign = 1.0f;
         listitem.child = label;
     }
 
-    [GtkCallback]
-    private void column_date2_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    //[GtkCallback]
+    private void builder_date_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
     {
         Gtk.Label label = listitem.child as Gtk.Label;
         FileInfo? info = listitem.item as FileInfo;
@@ -249,40 +249,40 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         if (0 == page_num)
         {
             action = simple_action_group.lookup_action("show-name") as SimpleAction;
-            action?.set_state (new Variant.boolean(column_name.visible));
+            action?.set_state (new Variant.boolean(signal_name.visible));
 
             action = simple_action_group.lookup_action("show-type") as SimpleAction;
-            action?.set_state (new Variant.boolean(column_type.visible));
+            action?.set_state (new Variant.boolean(signal_type.visible));
 
             action = simple_action_group.lookup_action("show-size") as SimpleAction;
-            action?.set_state (new Variant.boolean(column_size.visible));
+            action?.set_state (new Variant.boolean(signal_size.visible));
 
             action = simple_action_group.lookup_action("show-date") as SimpleAction;
-            action?.set_state (new Variant.boolean(column_date.visible));
+            action?.set_state (new Variant.boolean(signal_date.visible));
 
             var bind_flags = BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL;
-            binding_name = this.button_name.bind_property("active", this.column_name, "visible", bind_flags);
-            binding_type = this.button_type.bind_property("active", this.column_type, "visible", bind_flags);
-            binding_size = this.button_size.bind_property("active", this.column_size, "visible", bind_flags);
-            binding_date = this.button_date.bind_property("active", this.column_date, "visible", bind_flags);    
+            binding_name = this.button_name.bind_property("active", this.signal_name, "visible", bind_flags);
+            binding_type = this.button_type.bind_property("active", this.signal_type, "visible", bind_flags);
+            binding_size = this.button_size.bind_property("active", this.signal_size, "visible", bind_flags);
+            binding_date = this.button_date.bind_property("active", this.signal_date, "visible", bind_flags);    
         } else {
             action = simple_action_group.lookup_action("show-name") as SimpleAction;
-            action?.set_state (new Variant.boolean(column_name2.visible));
+            action?.set_state (new Variant.boolean(builder_name.visible));
 
             action = simple_action_group.lookup_action("show-type") as SimpleAction;
-            action?.set_state (new Variant.boolean(column_type2.visible));
+            action?.set_state (new Variant.boolean(builder_type.visible));
 
             action = simple_action_group.lookup_action("show-size") as SimpleAction;
-            action?.set_state (new Variant.boolean(column_size2.visible));
+            action?.set_state (new Variant.boolean(builder_size.visible));
 
             action = simple_action_group.lookup_action("show-date") as SimpleAction;
-            action?.set_state (new Variant.boolean(column_date2.visible));
+            action?.set_state (new Variant.boolean(builder_date.visible));
 
             var bind_flags = BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL;
-            binding_name = this.button_name.bind_property("active", this.column_name2, "visible", bind_flags);
-            binding_type = this.button_type.bind_property("active", this.column_type2, "visible", bind_flags);
-            binding_size = this.button_size.bind_property("active", this.column_size2, "visible", bind_flags);
-            binding_date = this.button_date.bind_property("active", this.column_date2, "visible", bind_flags);    
+            binding_name = this.button_name.bind_property("active", this.builder_name, "visible", bind_flags);
+            binding_type = this.button_type.bind_property("active", this.builder_type, "visible", bind_flags);
+            binding_size = this.button_size.bind_property("active", this.builder_size, "visible", bind_flags);
+            binding_date = this.button_date.bind_property("active", this.builder_date, "visible", bind_flags);    
         }
     }
 
@@ -296,7 +296,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             Gdk.Rectangle rect = { (int)x, (int)y, 0, 0, };
             target_menu.set_pointing_to(rect);
 
-            SelectionModel model = (0 == books.page) ? this.columnview.model : this.columnview2.model;
+            SelectionModel model = (0 == books.page) ? this.view_signal.model : this.view_builder.model;
             if (! model.get_selection().is_empty())
             {
                 target_menu.popup();
@@ -351,71 +351,71 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     private void show_name_handler(SimpleAction action, Variant? parameter)
     {
         if (0 == books.page) {
-            this.column_name.visible = !column_name.visible;
-            action.set_state (new Variant.boolean(column_name.visible));
+            this.signal_name.visible = !signal_name.visible;
+            action.set_state (new Variant.boolean(signal_name.visible));
         } else {
-            this.column_name2.visible = !column_name2.visible;
-            action.set_state (new Variant.boolean(column_name2.visible));
+            this.builder_name.visible = !builder_name.visible;
+            action.set_state (new Variant.boolean(builder_name.visible));
         }
     }
 
     private void show_type_handler(SimpleAction action, Variant? parameter)
     {
         if (0 == books.page) {
-            this.column_type.visible = !column_type.visible;
-            action.set_state (new Variant.boolean(column_type.visible));
+            this.signal_type.visible = !signal_type.visible;
+            action.set_state (new Variant.boolean(signal_type.visible));
         } else {
-            this.column_type2.visible = !column_type2.visible;
-            action.set_state (new Variant.boolean(column_type2.visible));
+            this.builder_type.visible = !builder_type.visible;
+            action.set_state (new Variant.boolean(builder_type.visible));
         }
     }
 
     private void show_size_handler(SimpleAction action, Variant? parameter)
     {
         if (0 == books.page) {
-            this.column_size.visible = !column_size.visible;
-            action.set_state (new Variant.boolean(column_size.visible));
+            this.signal_size.visible = !signal_size.visible;
+            action.set_state (new Variant.boolean(signal_size.visible));
         } else {
-            this.column_size2.visible = !column_size2.visible;
-            action.set_state (new Variant.boolean(column_size2.visible));
+            this.builder_size.visible = !builder_size.visible;
+            action.set_state (new Variant.boolean(builder_size.visible));
         }
     }
 
     private void show_date_handler(SimpleAction action, Variant? parameter)
     {
         if (0 == books.page) {
-            this.column_date.visible = !column_date.visible;
-            action.set_state (new Variant.boolean(column_date.visible));
+            this.signal_date.visible = !signal_date.visible;
+            action.set_state (new Variant.boolean(signal_date.visible));
         } else {
-            this.column_date2.visible = !column_date2.visible;
-            action.set_state (new Variant.boolean(column_date2.visible));
+            this.builder_date.visible = !builder_date.visible;
+            action.set_state (new Variant.boolean(builder_date.visible));
         }
     }
 
     private void select_all_handler(SimpleAction action, Variant? parameter)
     {
         if (0 == books.page) {
-            this.columnview.model.select_all();
+            this.view_signal.model.select_all();
         } else {
-            this.columnview2.model.select_all();
+            this.view_builder.model.select_all();
         }
     }
 
     private void select_none_handler(SimpleAction action, Variant? parameter)
     {
         if (0 == books.page) {
-            this.columnview.model.unselect_all();
+            this.view_signal.model.unselect_all();
         } else {
-            this.columnview2.model.unselect_all();
+            this.view_builder.model.unselect_all();
         }
     }
 
     private void show_table_handler(SimpleAction action, Variant? parameter)
     {
         if (0 == books.page) {
-            this.columnview.css_classes = { "data-table" };
+            this.view_signal.css_classes = { "data-table" };
         } else {
-            this.columnview2.css_classes = { "data-table" };
+            this.view_builder.css_classes = { "data-table" };
         }
 
         var action2 = simple_action_group.lookup_action("show-table") as SimpleAction;
@@ -429,9 +429,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     private void show_list_handler(SimpleAction action, Variant? parameter)
     {
         if (0 == books.page) {
-            this.columnview.css_classes = { "rich-list" };
+            this.view_signal.css_classes = { "rich-list" };
         } else {
-            this.columnview2.css_classes = { "rich-list" };
+            this.view_builder.css_classes = { "rich-list" };
         }
 
         var action2 = simple_action_group.lookup_action("show-table") as SimpleAction;
@@ -445,9 +445,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     private void show_sidebar_handler(SimpleAction action, Variant? parameter)
     {
         if (0 == books.page) {
-            this.columnview.css_classes = { "navigation-sidebar" };
+            this.view_signal.css_classes = { "navigation-sidebar" };
         } else {
-            this.columnview2.css_classes = { "navigation-sidebar" };
+            this.view_builder.css_classes = { "navigation-sidebar" };
         }
 
         var action2 = simple_action_group.lookup_action("show-table") as SimpleAction;
@@ -487,18 +487,15 @@ string get_file_type_factory (Gtk.ListItem item, FileInfo? info) {
     }
 }
 
-double get_file_size_factory (Gtk.ListItem item, FileInfo? info) {
+string get_file_size_factory (Gtk.ListItem item, FileInfo? info) {
     if (null == info) {
-        return 0.0;
+        return "0";
     } else {
-        /* goffset is gint64 */
-        // int64 size = (double)info.get_size ();
-        // return "%ld".printf ((long) size);
-        return (double)info.get_size();
+        return info.get_size().to_string();
     }
 }
 
-string get_file_time_modified_factory (Gtk.ListItem item, FileInfo? info) {
+string get_file_date_factory (Gtk.ListItem item, FileInfo? info) {
     if (null == info) {
         return "";
     } else {

@@ -5,8 +5,9 @@ gtkdep = dependency('gtk4')
 gnome=import('gnome')
 resources = gnome.compile_resources('resources','column.gresource.xml')
 
+# 'odbc.vapi',
+
 sourcefiles = [
-    'odbc.vapi',
     'column.vala',
     'application.vala'
 ]

@@ -15,10 +15,11 @@
           </object>
         </child>
         <child>
-          <object class="GtkLabel">
+          <object class="GtkEditableLabel">
             <property name="hexpand">TRUE</property>
             <property name="xalign">0</property>
-            <binding name="label">
+            <property name="editable">true</property>
+            <binding name="text">
               <closure type="gchararray" function="get_file_name_factory">
                 <lookup name="item">GtkListItem</lookup>
               </closure>

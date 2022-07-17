@@ -6,10 +6,11 @@
         <property name="orientation">horizontal</property>
         <property name="spacing">20</property>
         <child>
-          <object class="GtkLabel">
+          <object class="GtkEditableLabel">
             <property name="hexpand">TRUE</property>
             <property name="xalign">0</property>
-            <binding name="label">
+            <property name="editable">true</property>
+            <binding name="text">
               <lookup type='GtkBox' name="orientation">
                 <lookup name="child">GtkListItem</lookup>
               </lookup>
@@ -17,10 +18,11 @@
           </object>
         </child>
         <child>
-          <object class="GtkLabel">
+          <object class="GtkEditableLabel">
             <property name="hexpand">TRUE</property>
             <property name="xalign">1.0</property>
-            <binding name="label">
+            <property name="editable">true</property>
+            <binding name="text">
               <lookup type='GtkBox' name="css_name">
                 <lookup name="child">GtkListItem</lookup>
               </lookup>

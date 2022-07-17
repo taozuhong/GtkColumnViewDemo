@@ -49,7 +49,7 @@
                 <property name="hexpand">TRUE</property>
                 <property name="vexpand">TRUE</property>
                 <child>
-                  <object class="GtkColumnView" id="columnview">
+                  <object class="GtkColumnView" id="view_signal">
                     <property name="show-column-separators">TRUE</property>
                     <property name="show-row-separators">TRUE</property>
                     <property name="enable-rubberband">TRUE</property>
@@ -68,15 +68,15 @@
                       </object>
                     </property>
                     <child>
-                      <object class="GtkColumnViewColumn" id="column_name">
+                      <object class="GtkColumnViewColumn" id="signal_name">
                         <property name="title">Name</property>
                         <property name="resizable">1</property>
                         <property name="expand">TRUE</property>
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkSignalListItemFactory">
-                            <signal name="setup" handler="column_name_setup_handler" />
-                            <signal name="bind" handler="column_name_bind_handler" />
+                            <signal name="setup" handler="signal_name_setup_handler" />
+                            <signal name="bind" handler="signal_name_bind_handler" />
                           </object>
                         </property>
                         <property name="sorter">
@@ -90,15 +90,15 @@
                       </object>
                     </child>  
                     <child>
-                      <object class="GtkColumnViewColumn" id="column_type">
+                      <object class="GtkColumnViewColumn" id="signal_type">
                         <property name="title">Type</property>
                         <property name="resizable">FALSE</property>
                         <property name="expand">TRUE</property>
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkSignalListItemFactory">
-                            <signal name="setup" handler="column_type_setup_handler" />
-                            <signal name="bind" handler="column_type_bind_handler" />
+                            <signal name="setup" handler="signal_type_setup_handler" />
+                            <signal name="bind" handler="signal_type_bind_handler" />
                           </object>
                         </property>
                         <property name="sorter">
@@ -113,15 +113,15 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkColumnViewColumn" id="column_size">
+                      <object class="GtkColumnViewColumn" id="signal_size">
                         <property name="title">Size</property>
                         <property name="resizable">FALSE</property>
                         <property name="expand">TRUE</property>
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkSignalListItemFactory">
-                            <signal name="setup" handler="column_size_setup_handler" />
-                            <signal name="bind" handler="column_size_bind_handler" />
+                            <signal name="setup" handler="signal_size_setup_handler" />
+                            <signal name="bind" handler="signal_size_bind_handler" />
                           </object>
                         </property>
                         <property name="sorter">
@@ -136,15 +136,15 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkColumnViewColumn" id="column_date">
+                      <object class="GtkColumnViewColumn" id="signal_date">
                         <property name="title">Date modified</property>
                         <property name="resizable">FALSE</property>
                         <property name="expand">TRUE</property>
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkSignalListItemFactory">
-                            <signal name="setup" handler="column_date_setup_handler" />
-                            <signal name="bind" handler="column_date_bind_handler" />
+                            <signal name="setup" handler="signal_date_setup_handler" />
+                            <signal name="bind" handler="signal_date_bind_handler" />
                           </object>
                         </property>
                         <property name="sorter">
@@ -187,7 +187,7 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Signal with editing</property>
+                    <property name="label" translatable="yes">Signal</property>
                   </object>
                 </child>
                 <child>
@@ -206,7 +206,7 @@
                 <property name="hexpand">TRUE</property>
                 <property name="vexpand">TRUE</property>
                 <child>
-                  <object class="GtkColumnView" id="columnview2">
+                  <object class="GtkColumnView" id="view_builder">
                     <property name="show-column-separators">TRUE</property>
                     <property name="show-row-separators">TRUE</property>
                     <property name="enable-rubberband">TRUE</property>
@@ -225,14 +225,14 @@
                       </object>
                     </property>
                     <child>
-                      <object class="GtkColumnViewColumn" id="column_name2">
+                      <object class="GtkColumnViewColumn" id="builder_name">
                         <property name="title">Name</property>
                         <property name="resizable">1</property>
                         <property name="expand">TRUE</property>
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkBuilderListItemFactory">
-                            <property name="resource">/com/github/taozuhong/GtkColumnViewDemo/column_item_name.ui</property>
+                            <property name="resource">/taozuhong/datagrid/column_item_name.ui</property>
                           </object>
                         </property>
                         <property name="sorter">
@@ -246,31 +246,14 @@
                       </object>
                     </child>  
                     <child>
-                      <object class="GtkColumnViewColumn" id="column_type2">
+                      <object class="GtkColumnViewColumn" id="builder_type">
                         <property name="title">Type</property>
                         <property name="resizable">FALSE</property>
                         <property name="expand">TRUE</property>
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkBuilderListItemFactory">
-                            <property name="bytes"><![CDATA[
-<?xml version="1.0" encoding="UTF-8"?>
-<interface>
-  <template class="GtkListItem">
-    <property name="child">
-      <object class="GtkLabel">
-        <property name="hexpand">TRUE</property>
-        <property name="xalign">0</property>
-        <binding name="label">
-          <closure type="gchararray" function="get_file_type_factory">
-            <lookup name="item">GtkListItem</lookup>
-          </closure>
-        </binding>
-      </object>
-    </property>
-  </template>
-</interface>
-                            ]]></property>
+                            <property name="resource">/taozuhong/datagrid/column_item_type.ui</property>
                           </object>
                         </property>
                         <property name="sorter">
@@ -285,15 +268,14 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkColumnViewColumn" id="column_size2">
+                      <object class="GtkColumnViewColumn" id="builder_size">
                         <property name="title">Size</property>
                         <property name="resizable">FALSE</property>
                         <property name="expand">TRUE</property>
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
-                          <object class="GtkSignalListItemFactory">
-                            <signal name="setup" handler="column_size2_setup_handler" />
-                            <signal name="bind" handler="column_size2_bind_handler" />
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="resource">/taozuhong/datagrid/column_item_size.ui</property>
                           </object>
                         </property>
                         <property name="sorter">
@@ -308,15 +290,14 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkColumnViewColumn" id="column_date2">
+                      <object class="GtkColumnViewColumn" id="builder_date">
                         <property name="title">Date modified</property>
                         <property name="resizable">FALSE</property>
                         <property name="expand">TRUE</property>
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
-                          <object class="GtkSignalListItemFactory">
-                            <signal name="setup" handler="column_date2_setup_handler" />
-                            <signal name="bind" handler="column_date2_bind_handler" />
+                          <object class="GtkBuilderListItemFactory">
+                            <property name="resource">/taozuhong/datagrid/column_item_date.ui</property>
                           </object>
                         </property>
                         <property name="sorter">
@@ -331,14 +312,14 @@
                       </object>
                     </child>
                     <child>
-                      <object class="GtkColumnViewColumn" id="column_prop">
+                      <object class="GtkColumnViewColumn" id="builder_prop">
                         <property name="title">Property</property>
                         <property name="resizable">FALSE</property>
                         <property name="expand">TRUE</property>
                         <property name="header-menu">header_menu</property>
                         <property name="factory">
                           <object class="GtkBuilderListItemFactory">
-                            <property name="resource">/com/github/taozuhong/GtkColumnViewDemo/column_item_property.ui</property>
+                            <property name="resource">/taozuhong/datagrid/column_item_property.ui</property>
                           </object>
                         </property>
                         <property name="sorter">
@@ -380,7 +361,7 @@
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="label" translatable="yes">Builder + Signal</property>
+                    <property name="label" translatable="yes">Builder</property>
                   </object>
                 </child>
                 <child>

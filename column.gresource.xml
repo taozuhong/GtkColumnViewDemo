@@ -1,8 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/com/github/taozuhong/GtkColumnViewDemo">
+  <gresource prefix="/taozuhong/datagrid">
     <file preprocess="xml-stripblanks">column.ui</file>
     <file preprocess="xml-stripblanks">column_item_name.ui</file>
+    <file preprocess="xml-stripblanks">column_item_date.ui</file>
     <file preprocess="xml-stripblanks">column_item_property.ui</file>
+    <file preprocess="xml-stripblanks">column_item_size.ui</file>
+    <file preprocess="xml-stripblanks">column_item_type.ui</file>
   </gresource>
 </gresources>
