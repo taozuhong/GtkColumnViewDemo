@@ -68,11 +68,13 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     private unowned Gtk.PopoverMenu rows_popmenu_mixed;
 
     private SimpleActionGroup simple_action_group;
+    private Gtk.StringList m_model_types;
     private unowned Binding binding_name;
     private unowned Binding binding_type;
     private unowned Binding binding_size;
     private unowned Binding binding_date;
 
+    const string[] type_array = { "UNKNOWN", "REGULAR", "DIRECTORY", "SYMBOLIC_LINK", "SPECIAL", "SHORTCUT", "MOUNTABLE" };
     const ActionEntry[] action_entries = {
         { "show-name", show_name_handler, null, "true", null },
         { "show-type", show_type_handler, null, "true", null },
@@ -89,6 +91,8 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
 
     public GtkColumnViewDemoWindow(Gtk.Application app) {
         Object (application: app);
+
+        m_model_types = new Gtk.StringList(type_array);
         
         File file = File.new_for_path(".");
         directory_list_signal.set_file(file);
@@ -113,7 +117,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void signal_name_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_name_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
         Gtk.Entry entry = new Gtk.Entry();
         entry.focusable = true;
@@ -121,62 +125,61 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         entry.secondary_icon_activatable = true;
         entry.secondary_icon_tooltip_text = "Click icon to edit it in large window";
         entry.xalign = 0.5f;
-        listitem.child = entry;
+        (listitem as Gtk.ListItem).child = entry;
     }
 
     [GtkCallback]
-    private void signal_name_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_name_bind_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
-        Gtk.Entry entry = listitem.child as Gtk.Entry;
-        FileInfo? info = listitem.item as FileInfo;
+        Gtk.ListItem list_item = listitem as Gtk.ListItem;
+        Gtk.Entry entry = list_item.child as Gtk.Entry;
+        FileInfo? info = list_item.item as FileInfo;
         if (null != info) {
             entry.text = info.get_name();
-            entry.primary_icon_gicon = get_icon_factory(listitem, info);
+            entry.primary_icon_gicon = get_icon_factory(list_item, info);
         } else {
             entry.text = "NULL";
         }
     }
 
     [GtkCallback]
-    private void signal_type_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_type_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
-        string[] type_array = { "UNKNOWN", "REGULAR", "DIRECTORY", "SYMBOLIC_LINK", "SPECIAL", "SHORTCUT", "MOUNTABLE" };
-        Gtk.ComboBoxText dropdown = new Gtk.ComboBoxText.with_entry();
-        dropdown.focusable = true;
-        dropdown.has_frame = true;
-        foreach(var text in type_array) {
-            dropdown.append_text(text);
-        }
-        listitem.child = dropdown;
+        Gtk.DropDown dropdown = new Gtk.DropDown(m_model_types, null);
+        (listitem as Gtk.ListItem).child = dropdown;
     }
 
     [GtkCallback]
-    private void signal_type_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_type_bind_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
-        Gtk.ComboBoxText dropdown = listitem.child as Gtk.ComboBoxText;
-        FileInfo? info = listitem.item as FileInfo;
+        Gtk.ListItem list_item = listitem as Gtk.ListItem;
+        Gtk.DropDown dropdown = list_item.child as Gtk.DropDown;
+        FileInfo? info = list_item.item as FileInfo;
         if (null != info) {
-            dropdown.active = info.get_file_type();
+            dropdown.selected = GLib.Random.int_range(0, type_array.length - 1);
         } else {
-            dropdown.active = FileType.UNKNOWN;
+            dropdown.selected = 0;
         }
     }
 
     [GtkCallback]
-    private void signal_size_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_size_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
         Gtk.Adjustment adjustment = new Gtk.Adjustment(0, 0, 1000000, 1, 10, 0);
         Gtk.SpinButton spin_button = new Gtk.SpinButton(adjustment, 1.0, 2);
         spin_button.focusable = true;
         spin_button.css_classes = { "vertical" };
-        listitem.child = spin_button;
+
+        Gtk.ListItem list_item = listitem as Gtk.ListItem;
+        list_item.child = spin_button;
     }
 
     [GtkCallback]
-    private void signal_size_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_size_bind_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
-        Gtk.SpinButton spin_button = listitem.child as Gtk.SpinButton;
-        FileInfo? info = listitem.item as FileInfo;
+        Gtk.ListItem list_item = listitem as Gtk.ListItem;
+        Gtk.SpinButton spin_button = list_item.child as Gtk.SpinButton;
+        FileInfo? info = list_item.item as FileInfo;
         if (null != info) {
             spin_button.value = (double)info.get_size();
         } else {
@@ -185,13 +188,14 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void signal_date_setup_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_date_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
         Gtk.Popover popover = new Gtk.Popover();
         Gtk.MenuButton button = new Gtk.MenuButton();
         button.focusable = true;
         button.popover = popover;
-        listitem.child = button;
+        Gtk.ListItem list_item = listitem as Gtk.ListItem;
+        list_item.child = button;
 
         Gtk.Calendar calendar = new Gtk.Calendar();
         popover.child = calendar;
@@ -206,10 +210,11 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     }
 
     [GtkCallback]
-    private void signal_date_bind_handler(Gtk.SignalListItemFactory factory, Gtk.ListItem listitem)
+    private void signal_date_bind_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
-        Gtk.MenuButton button = listitem.child as Gtk.MenuButton;
-        FileInfo? info = listitem.item as FileInfo;
+        Gtk.ListItem list_item = listitem as Gtk.ListItem;
+        Gtk.MenuButton button = list_item.child as Gtk.MenuButton;
+        FileInfo? info = list_item.item as FileInfo;
         if (null != info) {
             DateTime datetime = info.get_modification_date_time ();
             button.label = datetime.format("%F");
