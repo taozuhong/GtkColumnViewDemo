@@ -1,0 +1,19 @@
+{
+  // ...其他配置
+  "terminal.integrated.profiles.windows": {
+    "MSYS2": {
+      "path": "C:\\msys\\usr\\bin\\bash.exe",
+      "args": [
+        "--login",
+        "-i"
+      ],
+      "env": {
+        "MSYSTEM": "UCRT64",
+        "CHERE_INVOKING": "1",
+        "PWD": "${workspaceFolder}"
+      }
+    }
+  },
+  "terminal.integrated.cwd": "workspaceFolder",
+  "terminal.integrated.defaultProfile.windows": "MSYS2",
+}

@@ -145,7 +145,10 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkCallback]
     private void signal_type_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
-        Gtk.DropDown dropdown = new Gtk.DropDown(m_model_types, null);
+        var expression = new Gtk.PropertyExpression(typeof(Gtk.StringObject), null, "string");
+        Gtk.DropDown dropdown = new Gtk.DropDown(m_model_types, expression);
+        dropdown.valign = Gtk.Align.CENTER;
+        dropdown.enable_search = true;
         (listitem as Gtk.ListItem).child = dropdown;
     }
 

@@ -1,0 +1,46 @@
+{
+  "configurations": [
+    {
+      "name": "Debug",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}\\build\\GtkColumnViewDemo.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}\\build",
+      "environment": [
+        { "name": "GI_TYPELIB_PATH", "value": "${workspaceFolder}\\build:$GI_TYPELIB_PATH" },
+        { "name": "LD_LIBRARY_PATH", "value": "${workspaceFolder}\\build:$LD_LIBRARY_PATH" },
+        { "name": "PKG_CONFIG_PATH", "value": "${workspaceFolder}\\build:$PKG_CONFIG_PATH" },
+      ],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "C:\\msys\\ucrt64\\bin\\gdb.exe",
+      "preLaunchTask": "compile",
+      "setupCommands": [
+        {
+          "description": "Enable pretty-printing for gdb",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    },
+    {
+      "name": "Launch",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}\\build\\GtkColumnViewDemo.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}\\build",
+      "environment": [
+        { "name": "GI_TYPELIB_PATH", "value": "${workspaceFolder}\\build:$GI_TYPELIB_PATH" },
+        { "name": "LD_LIBRARY_PATH", "value": "${workspaceFolder}\\build:$LD_LIBRARY_PATH" },
+        { "name": "PKG_CONFIG_PATH", "value": "${workspaceFolder}\\build:$PKG_CONFIG_PATH" },
+      ],
+      "externalConsole": false,
+      "preLaunchTask": "compile",
+    },
+  ],
+  "version": "2.0.0"
+}

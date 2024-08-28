@@ -10,10 +10,11 @@ The GtkColumnViewDemo app integrates with following GTK4 features:
 6. GtkBuilderListItemFactory with resource and bytes support
 7. GtkSignalListItemFactory
 8. Shortcut register and handle
-9. GtkMenuButton/GtkSpinButton/GtkEntry/GtkPopover/GtkComboBoxText/... usage
+9. GtkMenuButton/GtkSpinButton/GtkEntry/GtkPopover/GtkDropDown/... usage
 10. GtkExpression usage
 11. MessageDialog with default button and css style
 12. Toolbar with dynamic binding support
+13. Add MSYS2 based VSCode debug support
 
 # Screenshot
 ![Edit mode with GtkSignalListItemFactory](./images/screenshot-1.png)
@@ -59,6 +60,7 @@ __Expression with GtkExpression property + GtkClosureExpression(global)__
 <object class="AdwComboRow" id="alignment">
   <property name="visible">True</property>
   <property name="focusable">False</property>
+  <property name="enable-search">True</property>
   <property name="title" translatable="yes">Alignment</property>
   <property name="model">
     <object class="AdwEnumListModel">

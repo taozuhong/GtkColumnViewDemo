@@ -1,0 +1,32 @@
+{
+  "tasks": [
+    {
+      "label": "reconfigure",
+      "type": "shell",
+      "command": "meson",
+      "args": [
+        "setup",
+        "--reconfigure",
+        "build"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+    },
+    {
+      "label": "compile",
+      "type": "shell",
+      "command": "meson",
+      "args": [
+        "compile",
+        "-C",
+        "build"
+      ],
+      "options": {
+        "cwd": "${workspaceFolder}"
+      },
+      "dependsOn": ["reconfigure"]
+    },
+  ],
+  "version": "2.0.0"
+}
