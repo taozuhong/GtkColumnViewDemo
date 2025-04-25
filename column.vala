@@ -98,6 +98,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     private unowned Binding binding_size;
     private unowned Binding binding_date;
 
+    enum Columns { NAME, TYPE, SIZE, DATE, N_COLUMNS }
     const string[] type_array = { "UNKNOWN", "REGULAR", "DIRECTORY", "SYMBOLIC_LINK", "SPECIAL", "SHORTCUT", "MOUNTABLE" };
     const ActionEntry[] action_entries = {
         { "show-name", show_name_handler, null, "true", null },
@@ -689,69 +690,111 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkCallback]
     private void column_update_name_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
-        Gtk.EditableLabel label = new Gtk.EditableLabel("");
-        label.xalign = 0.5f;
-        (listitem as Gtk.ListItem).child = label;
+        Gtk.EditableLabel editable_label = new Gtk.EditableLabel("");
+        editable_label.xalign = 0.5f;
+        (listitem as Gtk.ListItem).child = editable_label;
     }
 
     [GtkCallback]
     private void column_update_name_bind_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
         Gtk.ListItem list_item = listitem as Gtk.ListItem;
-        Gtk.EditableLabel label = list_item.child as Gtk.EditableLabel;
+        Gtk.EditableLabel editable_label = list_item.child as Gtk.EditableLabel;
         FileInfoModel? info = list_item.item as FileInfoModel;
-        label.text = info?.name;
+        editable_label.changed.disconnect(editable_changed_handler);
+        editable_label.set_data<int>("LISTINDEX", Columns.NAME);
+        editable_label.set_data<FileInfoModel>("LISTITEM", info);
+        editable_label.text = info?.name;
+        editable_label.changed.connect(editable_changed_handler);
     }
 
     [GtkCallback]
     private void column_update_type_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
-        Gtk.EditableLabel label = new Gtk.EditableLabel("");
-        label.xalign = 0.5f;
-        (listitem as Gtk.ListItem).child = label;
+        Gtk.EditableLabel editable_label = new Gtk.EditableLabel("");
+        editable_label.xalign = 0.5f;
+        (listitem as Gtk.ListItem).child = editable_label;
     }
 
     [GtkCallback]
     private void column_update_type_bind_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
         Gtk.ListItem list_item = listitem as Gtk.ListItem;
-        Gtk.EditableLabel label = list_item.child as Gtk.EditableLabel;
+        Gtk.EditableLabel editable_label = list_item.child as Gtk.EditableLabel;
         FileInfoModel? info = list_item.item as FileInfoModel;
-        label.text = info?.kind.to_string();
+        editable_label.changed.disconnect(editable_changed_handler);
+        editable_label.set_data<int>("LISTINDEX", Columns.TYPE);
+        editable_label.set_data<FileInfoModel>("LISTITEM", info);
+        EnumClass enum_class = (EnumClass) typeof(FileType).class_ref();
+        unowned EnumValue? enum_value = enum_class.get_value (info?.kind);
+        editable_label.text = (null != enum_value) ? enum_value.value_nick.up() : "";
+        editable_label.changed.connect(editable_changed_handler);
     }
 
     [GtkCallback]
     private void column_update_size_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
-        Gtk.EditableLabel label = new Gtk.EditableLabel("");
-        label.xalign = 0.5f;
-        (listitem as Gtk.ListItem).child = label;
+        Gtk.EditableLabel editable_label = new Gtk.EditableLabel("");
+        editable_label.xalign = 0.5f;
+        (listitem as Gtk.ListItem).child = editable_label;
     }
 
     [GtkCallback]
     private void column_update_size_bind_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
         Gtk.ListItem list_item = listitem as Gtk.ListItem;
-        Gtk.EditableLabel label = list_item.child as Gtk.EditableLabel;
+        Gtk.EditableLabel editable_label = list_item.child as Gtk.EditableLabel;
         FileInfoModel? info = list_item.item as FileInfoModel;
-        label.text = info?.size.to_string();
+        editable_label.changed.disconnect(editable_changed_handler);
+        editable_label.set_data<int>("LISTINDEX", Columns.SIZE);
+        editable_label.set_data<FileInfoModel>("LISTITEM", info);
+        editable_label.text = info?.size.to_string();
+        editable_label.changed.connect(editable_changed_handler);
     }
 
     [GtkCallback]
     private void column_update_date_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
-        Gtk.EditableLabel label = new Gtk.EditableLabel("");
-        label.xalign = 0.5f;
-        (listitem as Gtk.ListItem).child = label;
+        Gtk.EditableLabel editable_label = new Gtk.EditableLabel("");
+        editable_label.xalign = 0.5f;
+        (listitem as Gtk.ListItem).child = editable_label;
     }
 
     [GtkCallback]
     private void column_update_date_bind_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
     {
         Gtk.ListItem list_item = listitem as Gtk.ListItem;
-        Gtk.EditableLabel label = list_item.child as Gtk.EditableLabel;
+        Gtk.EditableLabel editable_label = list_item.child as Gtk.EditableLabel;
         FileInfoModel? info = list_item.item as FileInfoModel;
-        label.text = info?.date.format("%Y-%m-%d %H:%M:%S");
+        editable_label.changed.disconnect(editable_changed_handler);
+        editable_label.set_data<int>("LISTINDEX", Columns.DATE);
+        editable_label.set_data<FileInfoModel>("LISTITEM", info);
+        editable_label.text = info?.date.format("%Y-%m-%d %H:%M:%S");
+        editable_label.changed.connect(editable_changed_handler);
+    }
+
+    private void editable_changed_handler(Gtk.Editable sender)
+    {
+        int index = sender.get_data<int>("LISTINDEX");
+        FileInfoModel info = sender.get_data<FileInfoModel>("LISTITEM");
+        switch(index) {
+        case Columns.NAME:
+            info.name = sender.text;
+            break;
+        case Columns.TYPE:
+            EnumClass enum_class = (EnumClass)typeof (FileType).class_ref();
+            unowned EnumValue? enum_value = enum_class.get_value_by_nick(sender.text);
+            info.kind = (null != enum_value) ? enum_value.value : FileType.UNKNOWN;
+            break;
+        case Columns.SIZE:
+            info.size = uint64.parse(sender.text);
+            break;
+        case Columns.DATE:
+            info.date = new DateTime.from_iso8601(sender.text, new TimeZone.local());
+            break;
+        default:
+            break;
+        }
     }
 }
 
