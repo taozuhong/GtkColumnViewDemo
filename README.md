@@ -2,19 +2,22 @@
 This is a GtkColumnView demo app for validating the GTK4 features for [Kangaroo App](https://www.datatable.online/?from=github), that is a database client and admin tool built with GTK, libgda and Vala.
 
 The GtkColumnViewDemo app integrates with following GTK4 features:
-1. GtkColumnView / GtkColumnViewColumn
-2. GtkPopoverMenu with checkmark
-3. Context menu with model and submenu support
-4. GtkNotebook with a custom tab widget
-5. GtkBuilder with GtkTemplate / GtkChild / GtkCallback support
-6. GtkBuilderListItemFactory with resource and bytes support
-7. GtkSignalListItemFactory
-8. Shortcut register and handle
-9. GtkMenuButton/GtkSpinButton/GtkEntry/GtkPopover/GtkDropDown/... usage
-10. GtkExpression usage
-11. MessageDialog with default button and css style
-12. Toolbar with dynamic binding support
-13. Add MSYS2 based VSCode debug support
+- GtkColumnView with sorting support
+- GtkColumnView editing and saving support
+- GtkColumnView style switching support
+- GtkPopoverMenu with checkmark support
+- Context menu with model and submenu support
+- GtkNotebook with custom tab widgets
+- GtkBuilder with GtkTemplate/GtkChild/GtkCallback support
+- GtkBuilderListItemFactory with resource and bytes support
+- GtkSignalListItemFactory implementation
+- Shortcut registration and handling
+- Usage of GtkMenuButton/GtkSpinButton/GtkEntry/GtkPopover/GtkDropDown/...
+- GtkExpression implementation
+- GtkAlertDialog implementation
+- Enum values with nicknames and parsing support
+- Toolbar with dynamic binding support
+- Added MSYS2-based VSCode debugging support
 
 # Screenshot
 ![Edit mode with GtkSignalListItemFactory](./images/screenshot-1.png)
