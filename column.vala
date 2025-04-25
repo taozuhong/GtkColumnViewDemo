@@ -1,5 +1,24 @@
 using Gtk;
 
+public class FileInfoModel : GLib.Object {
+    public string   name { get; set; default = ""; }
+    public FileType kind { get; set; default = FileType.REGULAR; }
+    public uint64   size { get; set; default = 0; }
+    public DateTime date { get; set; default = new DateTime.now_local(); }
+
+    public FileInfoModel()
+    {
+    }
+
+    public FileInfoModel.with_name(string _name)
+    {
+        this.name = _name;
+        this.kind = (FileType)GLib.Random.int_range(0, 6);
+        this.size = GLib.Random.int_range(500, 1000000);
+        this.date = new DateTime.now_local();
+    }
+}
+
 [GtkTemplate (ui = "/taozuhong/datagrid/column.ui")]
 public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
@@ -19,17 +38,15 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
     private unowned Gtk.ColumnView view_mixed;
     [GtkChild]
+    private unowned Gtk.ColumnView view_update;
+    [GtkChild]
     private unowned Gtk.DirectoryList directory_list_signal;
     [GtkChild]
     private unowned Gtk.DirectoryList directory_list_builder;
     [GtkChild]
     private unowned Gtk.DirectoryList directory_list_mixed;
     [GtkChild]
-    private unowned Gtk.SortListModel sort_model_signal;
-    [GtkChild]
-    private unowned Gtk.SortListModel sort_model_builder;
-    [GtkChild]
-    private unowned Gtk.SortListModel sort_model_mixed;
+    private unowned Gtk.SortListModel sort_model_update;
     [GtkChild]
     private unowned Gtk.ColumnViewColumn signal_name;
     [GtkChild]
@@ -55,19 +72,24 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
     private unowned Gtk.ColumnViewColumn mixed_date;
     [GtkChild]
-    private unowned Gtk.GestureClick rows_right_signal;
+    private unowned Gtk.ColumnViewColumn column_update_name;
     [GtkChild]
-    private unowned Gtk.GestureClick rows_right_builder;
+    private unowned Gtk.ColumnViewColumn column_update_type;
     [GtkChild]
-    private unowned Gtk.GestureClick rows_right_mixed;
+    private unowned Gtk.ColumnViewColumn column_update_size;
+    [GtkChild]
+    private unowned Gtk.ColumnViewColumn column_update_date;
     [GtkChild]
     private unowned Gtk.PopoverMenu rows_popmenu_signal;
     [GtkChild]
     private unowned Gtk.PopoverMenu rows_popmenu_builder;
     [GtkChild]
     private unowned Gtk.PopoverMenu rows_popmenu_mixed;
+    [GtkChild]
+    private unowned Gtk.PopoverMenu rows_popmenu_update;
 
     private SimpleActionGroup simple_action_group;
+    private GLib.ListStore m_model_update;
     private Gtk.StringList m_model_types;
     private unowned Binding binding_name;
     private unowned Binding binding_type;
@@ -92,16 +114,21 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     public GtkColumnViewDemoWindow(Gtk.Application app) {
         Object (application: app);
 
+        typeof(FileInfoModel).ensure();
+
         m_model_types = new Gtk.StringList(type_array);
-        
+
+        m_model_update = new GLib.ListStore(typeof(FileInfoModel));
+        this.sort_model_update.model = m_model_update;
+        m_model_update.append(new FileInfoModel.with_name("column.ui"));
+        m_model_update.append(new FileInfoModel.with_name("column.vala"));
+        m_model_update.append(new FileInfoModel.with_name("application.vala"));
+
+
         File file = File.new_for_path(".");
         directory_list_signal.set_file(file);
         directory_list_builder.set_file(file);
         directory_list_mixed.set_file(file);
-
-        sort_model_signal.sorter = view_signal.sorter;
-        sort_model_builder.sorter = view_builder.sorter;
-        sort_model_mixed.sorter = view_mixed.sorter;
 
         var bind_flags = BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL;
         binding_name = this.button_name.bind_property("active", this.signal_name, "visible", bind_flags);
@@ -234,8 +261,8 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         binding_size.unbind();
         binding_date.unbind();
         SimpleAction? action;
-        if (0 == page_num)
-        {
+        switch (page_num) {
+        case 0:
             action = simple_action_group.lookup_action("show-name") as SimpleAction;
             action?.set_state (new Variant.boolean(signal_name.visible));
 
@@ -252,9 +279,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             binding_name = this.button_name.bind_property("active", this.signal_name, "visible", bind_flags);
             binding_type = this.button_type.bind_property("active", this.signal_type, "visible", bind_flags);
             binding_size = this.button_size.bind_property("active", this.signal_size, "visible", bind_flags);
-            binding_date = this.button_date.bind_property("active", this.signal_date, "visible", bind_flags);    
-        } else if (1 == page_num)
-        {
+            binding_date = this.button_date.bind_property("active", this.signal_date, "visible", bind_flags);
+            break;
+        case 1:
             action = simple_action_group.lookup_action("show-name") as SimpleAction;
             action?.set_state (new Variant.boolean(builder_name.visible));
 
@@ -272,7 +299,8 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             binding_type = this.button_type.bind_property("active", this.builder_type, "visible", bind_flags);
             binding_size = this.button_size.bind_property("active", this.builder_size, "visible", bind_flags);
             binding_date = this.button_date.bind_property("active", this.builder_date, "visible", bind_flags);
-        } else {
+            break;
+        case 2:
             action = simple_action_group.lookup_action("show-name") as SimpleAction;
             action?.set_state (new Variant.boolean(mixed_name.visible));
 
@@ -289,7 +317,29 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             binding_name = this.button_name.bind_property("active", this.mixed_name, "visible", bind_flags);
             binding_type = this.button_type.bind_property("active", this.mixed_type, "visible", bind_flags);
             binding_size = this.button_size.bind_property("active", this.mixed_size, "visible", bind_flags);
-            binding_date = this.button_date.bind_property("active", this.mixed_date, "visible", bind_flags);    
+            binding_date = this.button_date.bind_property("active", this.mixed_date, "visible", bind_flags);
+            break;
+        case 3:
+            action = simple_action_group.lookup_action("show-name") as SimpleAction;
+            action?.set_state (new Variant.boolean(column_update_name.visible));
+
+            action = simple_action_group.lookup_action("show-type") as SimpleAction;
+            action?.set_state (new Variant.boolean(column_update_type.visible));
+
+            action = simple_action_group.lookup_action("show-size") as SimpleAction;
+            action?.set_state (new Variant.boolean(column_update_size.visible));
+
+            action = simple_action_group.lookup_action("show-date") as SimpleAction;
+            action?.set_state (new Variant.boolean(column_update_date.visible));
+
+            var bind_flags = BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL;
+            binding_name = this.button_name.bind_property("active", this.column_update_name, "visible", bind_flags);
+            binding_type = this.button_type.bind_property("active", this.column_update_type, "visible", bind_flags);
+            binding_size = this.button_size.bind_property("active", this.column_update_size, "visible", bind_flags);
+            binding_date = this.button_date.bind_property("active", this.column_update_date, "visible", bind_flags);
+            break;
+        default:
+            break;
         }
     }
 
@@ -310,6 +360,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             case 2:
                 target_menu = rows_popmenu_mixed;
                 break;
+            case 3:
+                target_menu = rows_popmenu_update;
+                break;
             default:
                 target_menu = rows_popmenu_signal;
                 break;
@@ -327,6 +380,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
                 break;
             case 2:
                 model = this.view_mixed.model;
+                break;
+            case 3:
+                model = this.view_update.model;
                 break;
             default:
                 model = this.view_signal.model;
@@ -386,90 +442,165 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
 
     private void show_name_handler(SimpleAction action, Variant? parameter)
     {
-        if (0 == books.page) {
+        switch(books.page) {
+        case 0:
             this.signal_name.visible = !signal_name.visible;
             action.set_state (new Variant.boolean(signal_name.visible));
-        } else if (1 == books.page) {
+            break;
+        case 1:
             this.builder_name.visible = !builder_name.visible;
             action.set_state (new Variant.boolean(builder_name.visible));
-        } else {
+            break;
+        case 2:
             this.mixed_name.visible = !mixed_name.visible;
             action.set_state (new Variant.boolean(mixed_name.visible));
+            break;
+        case 3:
+            this.column_update_name.visible = !column_update_name.visible;
+            action.set_state (new Variant.boolean(column_update_name.visible));
+            break;
+        default:
+            break;
         }
     }
 
     private void show_type_handler(SimpleAction action, Variant? parameter)
     {
-        if (0 == books.page) {
+        switch(books.page) {
+        case 0:
             this.signal_type.visible = !signal_type.visible;
             action.set_state (new Variant.boolean(signal_type.visible));
-        } else if (1 == books.page) {
+            break;
+        case 1:
             this.builder_type.visible = !builder_type.visible;
             action.set_state (new Variant.boolean(builder_type.visible));
-        } else {
+            break;
+        case 2:
             this.mixed_type.visible = !mixed_type.visible;
             action.set_state (new Variant.boolean(mixed_type.visible));
+            break;
+        case 3:
+            this.column_update_type.visible = !column_update_type.visible;
+            action.set_state (new Variant.boolean(column_update_type.visible));
+            break;
+        default:
+            break;
         }
     }
 
     private void show_size_handler(SimpleAction action, Variant? parameter)
     {
-        if (0 == books.page) {
+        switch(books.page) {
+        case 0:
             this.signal_size.visible = !signal_size.visible;
             action.set_state (new Variant.boolean(signal_size.visible));
-        } else if (1 == books.page) {
+            break;
+        case 1:
             this.builder_size.visible = !builder_size.visible;
             action.set_state (new Variant.boolean(builder_size.visible));
-        } else {
+            break;
+        case 2:
             this.mixed_size.visible = !mixed_size.visible;
             action.set_state (new Variant.boolean(mixed_size.visible));
+            break;
+        case 3:
+            this.column_update_size.visible = !column_update_size.visible;
+            action.set_state (new Variant.boolean(column_update_size.visible));
+            break;
+        default:
+            break;
         }
     }
 
     private void show_date_handler(SimpleAction action, Variant? parameter)
     {
-        if (0 == books.page) {
+        switch(books.page) {
+        case 0:
             this.signal_date.visible = !signal_date.visible;
             action.set_state (new Variant.boolean(signal_date.visible));
-        } else if (1 == books.page) {
+            break;
+        case 1:
             this.builder_date.visible = !builder_date.visible;
             action.set_state (new Variant.boolean(builder_date.visible));
-        } else {
+            break;
+        case 2:
             this.mixed_date.visible = !mixed_date.visible;
             action.set_state (new Variant.boolean(mixed_date.visible));
+            break;
+        case 3:
+            this.column_update_date.visible = !column_update_date.visible;
+            action.set_state (new Variant.boolean(column_update_date.visible));
+            break;
+        default:
+            break;
         }
     }
 
     private void select_all_handler(SimpleAction action, Variant? parameter)
     {
-        if (0 == books.page) {
+        switch (books.page) {
+        case 0:
             this.view_signal.model.select_all();
-        } else if (1 == books.page) {
+            break;
+        case 1:
             this.view_builder.model.select_all();
-        } else {
+            break;
+        case 2:
             this.view_mixed.model.select_all();
+            break;
+        case 3:
+            this.view_update.model.select_all();
+            break;
+        default:
+            break;
         }
     }
 
     private void select_none_handler(SimpleAction action, Variant? parameter)
     {
-        if (0 == books.page) {
+        switch (books.page) {
+        case 0:
             this.view_signal.model.unselect_all();
-        } else if (1 == books.page) {
+            break;
+        case 1:
             this.view_builder.model.unselect_all();
-        } else {
+            break;
+        case 2:
             this.view_mixed.model.unselect_all();
+            break;
+        case 3:
+            this.view_update.model.unselect_all();
+            break;
+        default:
+            break;
         }
     }
 
     private void show_table_handler(SimpleAction action, Variant? parameter)
     {
-        if (0 == books.page) {
-            this.view_signal.css_classes = { "data-table" };
-        } else if (1 == books.page) {
-            this.view_builder.css_classes = { "data-table" };
-        } else {
-            this.view_mixed.css_classes = { "data-table" };
+        switch (books.page) {
+        case 0:
+            this.view_signal.add_css_class("data-table");
+            this.view_signal.remove_css_class("rich-list");
+            this.view_signal.remove_css_class("navigation-sidebar");
+            break;
+        case 1:
+            this.view_builder.add_css_class("data-table");
+            this.view_builder.remove_css_class("rich-list");
+            this.view_builder.remove_css_class("navigation-sidebar");
+            break;
+        case 2:
+            this.view_mixed.add_css_class("data-table");
+            this.view_mixed.remove_css_class("rich-list");
+            this.view_mixed.remove_css_class("navigation-sidebar");
+            break;
+        case 3:
+            this.view_update.add_css_class("data-table");
+            this.view_update.remove_css_class("rich-list");
+            this.view_update.remove_css_class("navigation-sidebar");
+            break;
+        default:
+            break;
         }
 
         var action2 = simple_action_group.lookup_action("show-table") as SimpleAction;
@@ -482,12 +613,29 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
 
     private void show_list_handler(SimpleAction action, Variant? parameter)
     {
-        if (0 == books.page) {
-            this.view_signal.css_classes = { "rich-list" };
-        } else if (1 == books.page) {
-            this.view_builder.css_classes = { "rich-list" };
-        } else {
-            this.view_mixed.css_classes = { "rich-list" };
+        switch (books.page) {
+        case 0:
+            this.view_signal.add_css_class("rich-list");
+            this.view_signal.remove_css_class("data-table");
+            this.view_signal.remove_css_class("navigation-sidebar");
+            break;
+        case 1:
+            this.view_builder.add_css_class("rich-list");
+            this.view_builder.remove_css_class("data-table");
+            this.view_builder.remove_css_class("navigation-sidebar");
+            break;
+        case 2:
+            this.view_mixed.add_css_class("rich-list");
+            this.view_mixed.remove_css_class("data-table");
+            this.view_mixed.remove_css_class("navigation-sidebar");
+            break;
+        case 3:
+            this.view_update.add_css_class("rich-list");
+            this.view_update.remove_css_class("data-table");
+            this.view_update.remove_css_class("navigation-sidebar");
+            break;
+        default:
+            break;
         }
 
         var action2 = simple_action_group.lookup_action("show-table") as SimpleAction;
@@ -500,12 +648,29 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
 
     private void show_sidebar_handler(SimpleAction action, Variant? parameter)
     {
-        if (0 == books.page) {
-            this.view_signal.css_classes = { "navigation-sidebar" };
-        } else if (1 == books.page) {
-            this.view_builder.css_classes = { "navigation-sidebar" };
-        } else {
-            this.view_mixed.css_classes = { "navigation-sidebar" };
+        switch (books.page) {
+        case 0:
+            this.view_signal.add_css_class("navigation-sidebar");
+            this.view_signal.remove_css_class("rich-list");
+            this.view_signal.remove_css_class("data-table");
+            break;
+        case 1:
+            this.view_builder.add_css_class("navigation-sidebar");
+            this.view_builder.remove_css_class("rich-list");
+            this.view_builder.remove_css_class("data-table");
+            break;
+        case 2:
+            this.view_mixed.add_css_class("navigation-sidebar");
+            this.view_mixed.remove_css_class("rich-list");
+            this.view_mixed.remove_css_class("data-table");
+            break;
+        case 3:
+            this.view_update.add_css_class("navigation-sidebar");
+            this.view_update.remove_css_class("rich-list");
+            this.view_update.remove_css_class("data-table");
+            break;
+        default:
+            break;
         }
 
         var action2 = simple_action_group.lookup_action("show-table") as SimpleAction;
@@ -514,6 +679,74 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         action2?.set_state (new Variant.boolean(false));
         action2 = simple_action_group.lookup_action("show-sidebar") as SimpleAction;
         action2?.set_state (new Variant.boolean(true));
+    }
+
+    [GtkCallback]
+    private void column_update_name_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
+    {
+        Gtk.EditableLabel label = new Gtk.EditableLabel("");
+        label.xalign = 0.5f;
+        (listitem as Gtk.ListItem).child = label;
+    }
+
+    [GtkCallback]
+    private void column_update_name_bind_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
+    {
+        Gtk.ListItem list_item = listitem as Gtk.ListItem;
+        Gtk.EditableLabel label = list_item.child as Gtk.EditableLabel;
+        FileInfoModel? info = list_item.item as FileInfoModel;
+        label.text = info?.name;
+    }
+
+    [GtkCallback]
+    private void column_update_type_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
+    {
+        Gtk.EditableLabel label = new Gtk.EditableLabel("");
+        label.xalign = 0.5f;
+        (listitem as Gtk.ListItem).child = label;
+    }
+
+    [GtkCallback]
+    private void column_update_type_bind_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
+    {
+        Gtk.ListItem list_item = listitem as Gtk.ListItem;
+        Gtk.EditableLabel label = list_item.child as Gtk.EditableLabel;
+        FileInfoModel? info = list_item.item as FileInfoModel;
+        label.text = info?.kind.to_string();
+    }
+
+    [GtkCallback]
+    private void column_update_size_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
+    {
+        Gtk.EditableLabel label = new Gtk.EditableLabel("");
+        label.xalign = 0.5f;
+        (listitem as Gtk.ListItem).child = label;
+    }
+
+    [GtkCallback]
+    private void column_update_size_bind_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
+    {
+        Gtk.ListItem list_item = listitem as Gtk.ListItem;
+        Gtk.EditableLabel label = list_item.child as Gtk.EditableLabel;
+        FileInfoModel? info = list_item.item as FileInfoModel;
+        label.text = info?.size.to_string();
+    }
+
+    [GtkCallback]
+    private void column_update_date_setup_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
+    {
+        Gtk.EditableLabel label = new Gtk.EditableLabel("");
+        label.xalign = 0.5f;
+        (listitem as Gtk.ListItem).child = label;
+    }
+
+    [GtkCallback]
+    private void column_update_date_bind_handler(Gtk.SignalListItemFactory factory, GLib.Object listitem)
+    {
+        Gtk.ListItem list_item = listitem as Gtk.ListItem;
+        Gtk.EditableLabel label = list_item.child as Gtk.EditableLabel;
+        FileInfoModel? info = list_item.item as FileInfoModel;
+        label.text = info?.date.format("%Y-%m-%d %H:%M:%S");
     }
 }
 
@@ -570,11 +803,11 @@ string get_file_name (FileInfo? info) {
     }
 }
 
-uint get_file_type (FileInfo? info) {
+int get_file_type (FileInfo? info) {
     if (null == info) {
-        return (uint)FileType.UNKNOWN;
+        return (int)FileType.UNKNOWN;
     } else {
-        return (uint)info.get_file_type ();
+        return (int)info.get_file_type ();
     }
 }
 
@@ -592,5 +825,21 @@ int64 get_file_date (FileInfo? info) {
     } else {
         DateTime dt = info.get_modification_date_time ();
         return dt.to_unix ();
+    }
+}
+
+int64 get_file_model_date (FileInfoModel? info) {
+    if (null == info) {
+        return -1;
+    } else {
+        return info.date.to_unix ();
+    }
+}
+
+int get_file_model_type (FileInfoModel? info) {
+    if (null == info) {
+        return (int)FileType.UNKNOWN;
+    } else {
+        return (int)info.kind;
     }
 }

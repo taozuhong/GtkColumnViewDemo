@@ -146,6 +146,9 @@
                       <object class="GtkMultiSelection" id="selection_signal">
                         <property name="model">
                           <object class="GtkSortListModel" id="sort_model_signal">
+                            <binding name="sorter">
+                              <lookup name="sorter">view_signal</lookup>
+                            </binding>
                             <property name="model">
                               <object class="GtkDirectoryList" id="directory_list_signal">
                                 <property name="attributes">standard::name,standard::icon,standard::type,standard::size,time::modified</property>
@@ -254,7 +257,7 @@
                         </object>
                     </child>
                     <child>
-                        <object class="GtkGestureClick" id="rows_right_signal">
+                        <object class="GtkGestureClick">
                           <property name="button">0</property>
                           <signal name="pressed" handler="rows_mouse_click_handler" />
                         </object>
@@ -303,6 +306,9 @@
                       <object class="GtkMultiSelection" id="selection_builder">
                         <property name="model">
                           <object class="GtkSortListModel" id="sort_model_builder">
+                            <binding name="sorter">
+                              <lookup name="sorter">view_builder</lookup>
+                            </binding>
                             <property name="model">
                               <object class="GtkDirectoryList" id="directory_list_builder">
                                 <property name="attributes">standard::name,standard::icon,standard::type,standard::size,time::modified</property>
@@ -428,7 +434,7 @@
                         </object>
                     </child>
                     <child>
-                        <object class="GtkGestureClick" id="rows_right_builder">
+                        <object class="GtkGestureClick">
                           <property name="button">0</property>
                           <signal name="pressed" handler="rows_mouse_click_handler" />
                         </object>
@@ -477,6 +483,9 @@
                       <object class="GtkMultiSelection" id="selection_mixed">
                         <property name="model">
                           <object class="GtkSortListModel" id="sort_model_mixed">
+                            <binding name="sorter">
+                              <lookup name="sorter">view_mixed</lookup>
+                            </binding>
                             <property name="model">
                               <object class="GtkDirectoryList" id="directory_list_mixed">
                                 <property name="attributes">standard::name,standard::icon,standard::type,standard::size,time::modified</property>
@@ -581,7 +590,7 @@
                         </object>
                     </child>
                     <child>
-                        <object class="GtkGestureClick" id="rows_right_mixed">
+                        <object class="GtkGestureClick">
                           <property name="button">0</property>
                           <signal name="pressed" handler="rows_mouse_click_handler" />
                         </object>
@@ -603,6 +612,160 @@
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
                     <property name="label" translatable="yes">Mixed</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton">
+                    <property name="icon-name">window-close</property>
+                    <signal name="clicked" handler="page_close_clicked_handler" />
+                    <style>
+                      <class name="flat"/>
+                    </style>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="GtkScrolledWindow">
+                <property name="hexpand">TRUE</property>
+                <property name="vexpand">TRUE</property>
+                <child>
+                  <object class="GtkColumnView" id="view_update">
+                    <property name="show-column-separators">TRUE</property>
+                    <property name="show-row-separators">TRUE</property>
+                    <property name="enable-rubberband">TRUE</property>
+                    <property name="reorderable">TRUE</property>
+                    <property name="model">
+                      <object class="GtkMultiSelection" id="selection_update">
+                        <property name="model">
+                          <object class="GtkSortListModel" id="sort_model_update">
+                            <binding name="sorter">
+                              <lookup name="sorter">view_update</lookup>
+                            </binding>
+                          </object>
+                        </property>
+                      </object>
+                    </property>
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_update_name">
+                        <property name="title">Name</property>
+                        <property name="resizable">1</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkSignalListItemFactory">
+                            <signal name="setup" handler="column_update_name_setup_handler" />
+                            <signal name="bind" handler="column_update_name_bind_handler" />
+                          </object>
+                        </property>
+                        <property name="sorter">
+                          <object class="GtkStringSorter">
+                            <property name="ignore-case">false</property>
+                            <property name="expression">
+                              <lookup name="name" type="FileInfoModel" />
+                            </property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>  
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_update_type">
+                        <property name="title">Type</property>
+                        <property name="resizable">FALSE</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkSignalListItemFactory">
+                            <signal name="setup" handler="column_update_type_setup_handler" />
+                            <signal name="bind" handler="column_update_type_bind_handler" />
+                          </object>
+                        </property>
+                        <property name="sorter">
+                          <object class="GtkNumericSorter">
+                            <property name="expression">
+                              <!--lookup name="kind" type="FileInfoModel" /-->
+                              <closure type="gint" function="get_file_model_type" />
+                            </property>
+                            <property name="sort-order">GTK_SORT_ASCENDING</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_update_size">
+                        <property name="title">Size</property>
+                        <property name="resizable">FALSE</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkSignalListItemFactory">
+                            <signal name="setup" handler="column_update_size_setup_handler" />
+                            <signal name="bind" handler="column_update_size_bind_handler" />
+                          </object>
+                        </property>
+                        <property name="sorter">
+                          <object class="GtkNumericSorter">
+                            <property name="expression">
+                              <lookup name="size" type="FileInfoModel" />
+                            </property>
+                            <property name="sort-order">GTK_SORT_ASCENDING</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkColumnViewColumn" id="column_update_date">
+                        <property name="title">Date</property>
+                        <property name="resizable">FALSE</property>
+                        <property name="expand">TRUE</property>
+                        <property name="header-menu">header_menu</property>
+                        <property name="factory">
+                          <object class="GtkSignalListItemFactory">
+                            <signal name="setup" handler="column_update_date_setup_handler" />
+                            <signal name="bind" handler="column_update_date_bind_handler" />
+                          </object>
+                        </property>
+                        <property name="sorter">
+                          <object class="GtkNumericSorter">
+                            <property name="expression">
+                              <!--lookup name="date" type="FileInfoModel" /-->
+                              <closure type="gint64" function="get_file_model_date" />
+                            </property>
+                            <property name="sort-order">GTK_SORT_ASCENDING</property>
+                          </object>
+                        </property>
+                      </object>
+                    </child>
+                    <child>
+                        <object class="GtkPopoverMenu" id="rows_popmenu_update">
+                          <property name="position">bottom</property>
+                          <property name="has-arrow">FALSE</property>
+                          <property name="menu-model">rows_menu</property>
+                        </object>
+                    </child>
+                    <child>
+                        <object class="GtkGestureClick">
+                          <property name="button">0</property>
+                          <signal name="pressed" handler="rows_mouse_click_handler" />
+                        </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child type="tab">
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="icon-name">applications-science</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="label" translatable="yes">Update</property>
                   </object>
                 </child>
                 <child>
