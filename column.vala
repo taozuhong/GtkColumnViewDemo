@@ -46,6 +46,8 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
     private unowned Gtk.DirectoryList directory_list_mixed;
     [GtkChild]
+    private unowned Gtk.MultiSelection selection_update;
+    [GtkChild]
     private unowned Gtk.SortListModel sort_model_update;
     [GtkChild]
     private unowned Gtk.ColumnViewColumn signal_name;
@@ -109,6 +111,8 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
 
         { "select-all", select_all_handler },
         { "select-none", select_none_handler },
+
+        { "update-model", update_file_model_handler },
     };
 
     public GtkColumnViewDemoWindow(Gtk.Application app) {
@@ -574,6 +578,35 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         default:
             break;
         }
+    }
+
+    private void update_file_model_handler(SimpleAction action, Variant? parameter)
+    {
+        books.page = 3;
+
+        if (this.selection_update.get_selection().is_empty()) {
+            this.selection_update.select_item(0, false);
+        }
+
+        uint position;
+        FileInfoModel? file_info;
+        var selected = this.selection_update.get_selection();
+        for(uint index = 0; index < selected.get_size(); ++index) {
+            position = selected.get_nth(index);
+            file_info = this.selection_update.get_item(position) as FileInfoModel;
+            if (null == file_info) {
+                continue;
+            }
+
+            file_info.kind = (FileType)GLib.Random.int_range(0, 6);
+            file_info.size = GLib.Random.int_range(500, 1000000);
+            file_info.date.add_days(0 - GLib.Random.int_range(1, 365));
+        }
+
+        //FIXME: How to update the column view?
+        this.selection_update.items_changed(selected.get_nth(0), (uint)selected.get_size(), (uint)selected.get_size());
+        var alert = new Gtk.AlertDialog("The selected rows have been updated, are you seeing them?");
+        alert.show(this);
     }
 
     private void show_table_handler(SimpleAction action, Variant? parameter)
