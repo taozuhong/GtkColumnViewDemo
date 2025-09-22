@@ -8,8 +8,8 @@ resources = gnome.compile_resources('resources','column.gresource.xml')
 # 'odbc.vapi',
 
 sourcefiles = [
+    'application.vala',
     'column.vala',
-    'application.vala'
 ]
 
 executable('GtkColumnViewDemo', sourcefiles, resources, dependencies: gtkdep, export_dynamic: true, install: false)

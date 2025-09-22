@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="GtkListItem">
+    <property name="child">
+      <object class="GtkTreeExpander" id="expander">
+        <binding name="list-row">
+          <lookup name="item">GtkListItem</lookup>
+        </binding>
+        <property name="child">
+          <object class="GtkBox">
+            <property name="orientation">horizontal</property>
+            <property name="spacing">5</property>
+            <child>
+              <object class="GtkImage">
+                <binding name="gicon">
+                  <closure type="GIcon" function="get_icon_factory">
+                    <lookup name="item">expander</lookup>
+                  </closure>
+                </binding>
+              </object>
+            </child>
+            <child>
+              <object class="GtkInscription">
+                <property name="hexpand">true</property>
+                <property name="xalign">0</property>
+                <property name="min-chars">25</property>
+                <binding name="text">
+                  <closure type="gchararray" function="get_file_name_factory">
+                    <lookup name="item">expander</lookup>
+                  </closure>
+                </binding>
+              </object>
+            </child>
+          </object>
+        </property>
+      </object>
+    </property>
+  </template>
+</interface>

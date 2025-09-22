@@ -40,11 +40,21 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
     private unowned Gtk.ColumnView view_update;
     [GtkChild]
+    private unowned Gtk.ColumnView view_tree;
+    [GtkChild]
     private unowned Gtk.DirectoryList directory_list_signal;
     [GtkChild]
     private unowned Gtk.DirectoryList directory_list_builder;
     [GtkChild]
     private unowned Gtk.DirectoryList directory_list_mixed;
+    [GtkChild]
+    private unowned Gtk.MultiSelection selection_mixed;
+    [GtkChild]
+    private unowned Gtk.SortListModel sort_model_mixed;
+    [GtkChild]
+    private unowned Gtk.MultiSelection selection_tree;
+    [GtkChild]
+    private unowned Gtk.SortListModel sort_model_tree;
     [GtkChild]
     private unowned Gtk.MultiSelection selection_update;
     [GtkChild]
@@ -89,6 +99,8 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     private unowned Gtk.PopoverMenu rows_popmenu_mixed;
     [GtkChild]
     private unowned Gtk.PopoverMenu rows_popmenu_update;
+    [GtkChild]
+    private unowned Gtk.PopoverMenu rows_popmenu_tree;
 
     private SimpleActionGroup simple_action_group;
     private GLib.ListStore m_model_update;
@@ -134,6 +146,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         directory_list_signal.set_file(file);
         directory_list_builder.set_file(file);
         directory_list_mixed.set_file(file);
+        this.build_file_model.begin();
 
         var bind_flags = BindingFlags.SYNC_CREATE | BindingFlags.BIDIRECTIONAL;
         binding_name = this.button_name.bind_property("active", this.signal_name, "visible", bind_flags);
@@ -368,6 +381,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             case 3:
                 target_menu = rows_popmenu_update;
                 break;
+            case 4:
+                target_menu = rows_popmenu_tree;
+                break;
             default:
                 target_menu = rows_popmenu_signal;
                 break;
@@ -388,6 +404,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
                 break;
             case 3:
                 model = this.view_update.model;
+                break;
+            case 4:
+                model = this.view_tree.model;
                 break;
             default:
                 model = this.view_signal.model;
@@ -528,6 +547,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         case 3:
             this.view_update.model.select_all();
             break;
+        case 4:
+            this.view_tree.model.select_all();
+            break;
         default:
             break;
         }
@@ -547,6 +569,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             break;
         case 3:
             this.view_update.model.unselect_all();
+            break;
+        case 4:
+            this.view_tree.model.unselect_all();
             break;
         default:
             break;
@@ -605,6 +630,11 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             this.view_update.remove_css_class("rich-list");
             this.view_update.remove_css_class("navigation-sidebar");
             break;
+        case 4:
+            this.view_tree.add_css_class("data-table");
+            this.view_tree.remove_css_class("rich-list");
+            this.view_tree.remove_css_class("navigation-sidebar");
+            break;
         default:
             break;
         }
@@ -640,6 +670,11 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             this.view_update.remove_css_class("data-table");
             this.view_update.remove_css_class("navigation-sidebar");
             break;
+        case 4:
+            this.view_tree.add_css_class("rich-list");
+            this.view_tree.remove_css_class("data-table");
+            this.view_tree.remove_css_class("navigation-sidebar");
+            break;
         default:
             break;
         }
@@ -674,6 +709,11 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             this.view_update.add_css_class("navigation-sidebar");
             this.view_update.remove_css_class("rich-list");
             this.view_update.remove_css_class("data-table");
+            break;
+        case 4:
+            this.view_tree.add_css_class("navigation-sidebar");
+            this.view_tree.remove_css_class("rich-list");
+            this.view_tree.remove_css_class("data-table");
             break;
         default:
             break;
@@ -794,6 +834,49 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             break;
         default:
             break;
+        }
+    }
+
+    private async void build_file_model()
+    {
+        FileInfo file_info;
+        var file = File.new_for_path(".");
+        var list_model = new GLib.ListStore(typeof(FileInfo));
+        try {
+            FileEnumerator enumerator = yield file.enumerate_children_async("standard::*", FileQueryInfoFlags.NOFOLLOW_SYMLINKS, Priority.DEFAULT, null);
+            file_info = enumerator.next_file (null);
+            while (null != file_info) {
+                list_model.append(file_info);
+                file_info = enumerator.next_file (null);
+            }
+        } catch (Error e) {
+            print ("Error: %s\n", e.message);
+        }
+
+        this.sort_model_tree.model = new TreeListModel(list_model, false, false, tree_create_model_handler);
+    }
+
+    private ListModel? tree_create_model_handler(Object item)
+    {
+        FileInfo file_info = item as FileInfo;
+        if (FileType.DIRECTORY != file_info.get_file_type()) {
+            return null;
+        } else {
+            FileInfo file_info_temp;
+            var file = File.new_for_path(file_info.get_name());
+            var list_model = new GLib.ListStore(typeof(FileInfo));
+            try {
+                FileEnumerator enumerator = file.enumerate_children("standard::*", FileQueryInfoFlags.NOFOLLOW_SYMLINKS);
+                file_info_temp = enumerator.next_file (null);
+                while (null != file_info_temp) {
+                    list_model.append(file_info_temp);
+                    file_info_temp = enumerator.next_file (null);
+                }
+            } catch (Error e) {
+                print ("Error: %s\n", e.message);
+            }
+
+            return 0 < list_model.get_n_items() ? list_model : null;
         }
     }
 }

@@ -8,5 +8,6 @@
     <file preprocess="xml-stripblanks">builder_column_size.ui</file>
     <file preprocess="xml-stripblanks">builder_column_type.ui</file>
     <file preprocess="xml-stripblanks">mixed_column_name.ui</file>
+    <file preprocess="xml-stripblanks">tree_column_name.ui</file>
   </gresource>
 </gresources>
