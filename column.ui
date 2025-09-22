@@ -309,6 +309,7 @@
             <child type="tab">
               <object class="GtkBox">
                 <property name="orientation">horizontal</property>
+                <property name="spacing">5</property>
                 <child>
                   <object class="GtkImage">
                     <property name="icon-name">accessories-dictionary-symbolic</property>
@@ -486,6 +487,7 @@
             <child type="tab">
               <object class="GtkBox">
                 <property name="orientation">horizontal</property>
+                <property name="spacing">5</property>
                 <child>
                   <object class="GtkImage">
                     <property name="icon-name">preferences-desktop-apps-symbolic</property>
@@ -642,6 +644,7 @@
             <child type="tab">
               <object class="GtkBox">
                 <property name="orientation">horizontal</property>
+                <property name="spacing">5</property>
                 <child>
                   <object class="GtkImage">
                     <property name="icon-name">preferences-system-sharing-symbolic</property>
@@ -796,6 +799,7 @@
             <child type="tab">
               <object class="GtkBox">
                 <property name="orientation">horizontal</property>
+                <property name="spacing">5</property>
                 <child>
                   <object class="GtkImage">
                     <property name="icon-name">applications-science</property>
@@ -833,9 +837,13 @@
                       <object class="GtkMultiSelection" id="selection_tree">
                         <property name="model">
                           <object class="GtkSortListModel" id="sort_model_tree">
-                            <binding name="sorter">
-                              <lookup name="sorter">view_tree</lookup>
-                            </binding>
+                            <property name="sorter">
+                              <object class='GtkTreeListRowSorter'>
+                                <binding name="sorter">
+                                  <lookup name="sorter">view_tree</lookup>
+                                </binding>
+                              </object>
+                            </property>
                           </object>
                         </property>
                       </object>
@@ -853,6 +861,7 @@
                         </property>
                         <property name="sorter">
                           <object class="GtkStringSorter">
+                            <property name="ignore-case">false</property>
                             <property name="expression">
                               <closure type="gchararray" function="get_file_name">
                               </closure>
@@ -881,6 +890,7 @@
             <child type="tab">
               <object class="GtkBox">
                 <property name="orientation">horizontal</property>
+                <property name="spacing">5</property>
                 <child>
                   <object class="GtkImage">
                     <property name="icon-name">preferences-system-sharing-symbolic</property>
