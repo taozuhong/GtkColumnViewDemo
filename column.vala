@@ -30,6 +30,8 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
     [GtkChild]
     private unowned Gtk.ToggleButton button_date;
     [GtkChild]
+    private unowned Gtk.Button       button_update;
+    [GtkChild]
     private unowned Gtk.Notebook books;
     [GtkChild]
     private unowned Gtk.ColumnView view_signal;
@@ -280,7 +282,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         binding_date.unbind();
         SimpleAction? action;
         switch (page_num) {
-        case 0:
+        case 0:     // Signal
             action = simple_action_group.lookup_action("show-name") as SimpleAction;
             action?.set_state (new Variant.boolean(signal_name.visible));
 
@@ -299,7 +301,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             binding_size = this.button_size.bind_property("active", this.signal_size, "visible", bind_flags);
             binding_date = this.button_date.bind_property("active", this.signal_date, "visible", bind_flags);
             break;
-        case 1:
+        case 1:     // Builder
             action = simple_action_group.lookup_action("show-name") as SimpleAction;
             action?.set_state (new Variant.boolean(builder_name.visible));
 
@@ -318,7 +320,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             binding_size = this.button_size.bind_property("active", this.builder_size, "visible", bind_flags);
             binding_date = this.button_date.bind_property("active", this.builder_date, "visible", bind_flags);
             break;
-        case 2:
+        case 2:     // Mixed
             action = simple_action_group.lookup_action("show-name") as SimpleAction;
             action?.set_state (new Variant.boolean(mixed_name.visible));
 
@@ -337,7 +339,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             binding_size = this.button_size.bind_property("active", this.mixed_size, "visible", bind_flags);
             binding_date = this.button_date.bind_property("active", this.mixed_date, "visible", bind_flags);
             break;
-        case 3:
+        case 3:     // Update
             action = simple_action_group.lookup_action("show-name") as SimpleAction;
             action?.set_state (new Variant.boolean(column_update_name.visible));
 
@@ -356,9 +358,17 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
             binding_size = this.button_size.bind_property("active", this.column_update_size, "visible", bind_flags);
             binding_date = this.button_date.bind_property("active", this.column_update_date, "visible", bind_flags);
             break;
+        case 4:     // Tree
         default:
             break;
         }
+
+        // Update button sensitive
+        this.button_update.sensitive = (page_num == 3);
+        this.button_name.sensitive = (page_num != 4);
+        this.button_type.sensitive = (page_num != 4);
+        this.button_size.sensitive = (page_num != 4);
+        this.button_date.sensitive = (page_num != 4);
     }
 
     [GtkCallback]
@@ -589,7 +599,7 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         uint position;
         FileInfoModel? file_info;
         var selected = this.selection_update.get_selection();
-        for(uint index = 0; index < selected.get_size(); ++index) {
+        for (uint index = 0; index < selected.get_size(); ++index) {
             position = selected.get_nth(index);
             file_info = this.selection_update.get_item(position) as FileInfoModel;
             if (null == file_info) {
@@ -598,11 +608,9 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
 
             file_info.kind = (FileType)GLib.Random.int_range(0, 6);
             file_info.size = GLib.Random.int_range(500, 1000000);
-            file_info.date.add_days(0 - GLib.Random.int_range(1, 365));
+            file_info.date = file_info.date.add_days(0 - GLib.Random.int_range(1, 365));
         }
 
-        //FIXME: How to update the column view?
-        this.selection_update.items_changed(selected.get_nth(0), (uint)selected.get_size(), (uint)selected.get_size());
         var alert = new Gtk.AlertDialog("The selected rows have been updated, are you seeing them?");
         alert.show(this);
     }
@@ -741,11 +749,28 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         Gtk.ListItem list_item = listitem as Gtk.ListItem;
         Gtk.EditableLabel editable_label = list_item.child as Gtk.EditableLabel;
         FileInfoModel? info = list_item.item as FileInfoModel;
+
+        // Disconnect old notify handler from previous item
+        FileInfoModel? old_info = editable_label.get_data<FileInfoModel>("LISTITEM");
+        ulong old_handler = editable_label.get_data<ulong>("notify-handler");
+        if (old_info != null && old_handler != 0) {
+            old_info.disconnect(old_handler);
+        }
+
         editable_label.changed.disconnect(editable_changed_handler);
         editable_label.set_data<int>("LISTINDEX", Columns.NAME);
         editable_label.set_data<FileInfoModel>("LISTITEM", info);
         editable_label.text = info?.name;
         editable_label.changed.connect(editable_changed_handler);
+
+        if (info != null) {
+            ulong handler_id = info.notify["name"].connect(() => {
+                editable_label.changed.disconnect(editable_changed_handler);
+                editable_label.text = info.name;
+                editable_label.changed.connect(editable_changed_handler);
+            });
+            editable_label.set_data<ulong>("notify-handler", handler_id);
+        }
     }
 
     [GtkCallback]
@@ -762,6 +787,13 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         Gtk.ListItem list_item = listitem as Gtk.ListItem;
         Gtk.EditableLabel editable_label = list_item.child as Gtk.EditableLabel;
         FileInfoModel? info = list_item.item as FileInfoModel;
+
+        FileInfoModel? old_info = editable_label.get_data<FileInfoModel>("LISTITEM");
+        ulong old_handler = editable_label.get_data<ulong>("notify-handler");
+        if (old_info != null && old_handler != 0) {
+            old_info.disconnect(old_handler);
+        }
+
         editable_label.changed.disconnect(editable_changed_handler);
         editable_label.set_data<int>("LISTINDEX", Columns.TYPE);
         editable_label.set_data<FileInfoModel>("LISTITEM", info);
@@ -769,6 +801,17 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         unowned EnumValue? enum_value = enum_class.get_value (info?.kind);
         editable_label.text = (null != enum_value) ? enum_value.value_nick.up() : "";
         editable_label.changed.connect(editable_changed_handler);
+
+        if (info != null) {
+            ulong handler_id = info.notify["kind"].connect(() => {
+                EnumClass klass = (EnumClass) typeof(FileType).class_ref();
+                unowned EnumValue? val = klass.get_value(info.kind);
+                editable_label.changed.disconnect(editable_changed_handler);
+                editable_label.text = (null != val) ? val.value_nick.up() : "";
+                editable_label.changed.connect(editable_changed_handler);
+            });
+            editable_label.set_data<ulong>("notify-handler", handler_id);
+        }
     }
 
     [GtkCallback]
@@ -785,11 +828,27 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         Gtk.ListItem list_item = listitem as Gtk.ListItem;
         Gtk.EditableLabel editable_label = list_item.child as Gtk.EditableLabel;
         FileInfoModel? info = list_item.item as FileInfoModel;
+
+        FileInfoModel? old_info = editable_label.get_data<FileInfoModel>("LISTITEM");
+        ulong old_handler = editable_label.get_data<ulong>("notify-handler");
+        if (old_info != null && old_handler != 0) {
+            old_info.disconnect(old_handler);
+        }
+
         editable_label.changed.disconnect(editable_changed_handler);
         editable_label.set_data<int>("LISTINDEX", Columns.SIZE);
         editable_label.set_data<FileInfoModel>("LISTITEM", info);
         editable_label.text = info?.size.to_string();
         editable_label.changed.connect(editable_changed_handler);
+
+        if (info != null) {
+            ulong handler_id = info.notify["size"].connect(() => {
+                editable_label.changed.disconnect(editable_changed_handler);
+                editable_label.text = info.size.to_string();
+                editable_label.changed.connect(editable_changed_handler);
+            });
+            editable_label.set_data<ulong>("notify-handler", handler_id);
+        }
     }
 
     [GtkCallback]
@@ -806,11 +865,27 @@ public class GtkColumnViewDemoWindow : Gtk.ApplicationWindow {
         Gtk.ListItem list_item = listitem as Gtk.ListItem;
         Gtk.EditableLabel editable_label = list_item.child as Gtk.EditableLabel;
         FileInfoModel? info = list_item.item as FileInfoModel;
+
+        FileInfoModel? old_info = editable_label.get_data<FileInfoModel>("LISTITEM");
+        ulong old_handler = editable_label.get_data<ulong>("notify-handler");
+        if (old_info != null && old_handler != 0) {
+            old_info.disconnect(old_handler);
+        }
+
         editable_label.changed.disconnect(editable_changed_handler);
         editable_label.set_data<int>("LISTINDEX", Columns.DATE);
         editable_label.set_data<FileInfoModel>("LISTITEM", info);
         editable_label.text = info?.date.format("%Y-%m-%d %H:%M:%S");
         editable_label.changed.connect(editable_changed_handler);
+
+        if (info != null) {
+            ulong handler_id = info.notify["date"].connect(() => {
+                editable_label.changed.disconnect(editable_changed_handler);
+                editable_label.text = info.date.format("%Y-%m-%d %H:%M:%S");
+                editable_label.changed.connect(editable_changed_handler);
+            });
+            editable_label.set_data<ulong>("notify-handler", handler_id);
+        }
     }
 
     private void editable_changed_handler(Gtk.Editable sender)
